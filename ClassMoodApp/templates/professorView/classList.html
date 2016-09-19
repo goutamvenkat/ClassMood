@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<div class="mdl-layout mdl-js-layout" align="center" style="align-items: center;">
+
+    <h2>Class List</h2>
+
+    <md-button class="md-primary">Create Class</md-button>
+    <md-button href="http://google.com"> Flat link </md-button>
+
+  	<div ng-controller="professorClassListController">
+  		<div ng-repeat="item in classList">
+  			{{item}}
+  		</div>
+  	</div>
+
+</div>
+
+{% endblock %}
