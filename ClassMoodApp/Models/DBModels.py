@@ -10,11 +10,11 @@ student_type, professor_type = 'STUDENT', 'PROFESSOR'
 
 class UserType(db.Model):
     __tablename__ = 'UserType'
-    id = db.Column(db.BigInteger(), primary_key=True)
+    id = db.Column(db.BigInteger(), db.ForeignKey('User.user_type'), primary_key=True)
     name = db.Column(db.String(400))
     can_add_class = db.Column(db.Boolean())
     can_list_classes = db.Column(db.Boolean())
-    user_relationship = db.relationship('User', backref='user_type', uselist=False, lazy='dynamic')
+    user_relationship = db.relationship('User')
     def __init__(self, name, can_add_class, can_list_classes):
         self.id = uuid.uuid4().int
         self.name = name
@@ -32,15 +32,17 @@ class User(db.Model):
     first_name = db.Column(db.String(40))
     last_name = db.Column(db.String(40))
     email = db.Column(db.String(400), unique=True)
+    user_type = db.Column(db.BigInteger())
     professor = db.relationship('Lecture')
     sessions = db.relationship('Sessions')
     auth = db.relationship('Authentication')
 
-    def __init__(self, first_name, last_name, email):
+    def __init__(self, first_name, last_name, email, user_type):
         self.id = uuid.uuid4().int
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
+        self.user_type = user_type
 
 class Lecture(db.Model):
     __tablename__ = 'Lecture'
