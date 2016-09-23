@@ -2,6 +2,7 @@ from . import DBModels
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import PickleType
 import hashlib
+import random
 class API(object):
     def get_student_class_list(self, email):
         student = DBModels.Student.query.filter_by(email=email).first()
@@ -28,3 +29,14 @@ class API(object):
             return password == hashlib.sha256(salt.encode() + user_password.encode()).hexdigest()
         return False
 
+    def create_session(self, email):
+        token = hashlib.md5(email + str(random.random()).hexdigest())
+        newsesh = DBModels.UserSession(email, token)
+        #figure out how to commit to db
+        return token
+
+    def delete_session(self, session_token):
+        DBModels.UserSession.query.filter_by(token=session_token).delete()
+        return None
+    
+    
