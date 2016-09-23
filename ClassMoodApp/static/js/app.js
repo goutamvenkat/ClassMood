@@ -1,7 +1,7 @@
 'use strict';
 
 /* Angular Class Mood module config */
-var app = angular.module('ClassMoodApp', ['ngRoute']);
+var app = angular.module('ClassMoodApp', ['ngRoute', 'ngMaterial']);
 
 app.config(function($interpolateProvider) {
 	$interpolateProvider.startSymbol('//').endSymbol('//');

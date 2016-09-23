@@ -30,10 +30,10 @@ class Student(db.Model):
 
 class Professor(db.Model):
     email = db.Column(db.String(400), primary_key=True)
-    lectures = db.Column(PickleType())
-    def __init__(self, email, lectures):
+    classes = db.Column(PickleType())
+    def __init__(self, email, classes):
         self.email = email
-        self.lectures = lectures
+        self.classes = classes
 
 class Lecture(db.Model):
     name = db.Column(db.String(20), primary_key=True)

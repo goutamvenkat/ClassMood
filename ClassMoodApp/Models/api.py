@@ -12,7 +12,7 @@ class API(object):
     def get_professor_class_list(self, email):
         professor = DBModels.Professor.query.filter_by(email=email).first()
         if professor:
-            return professor.lectures
+            return professor.classes
         return None
     
     def get_user_token(self, email):
