@@ -28,3 +28,5 @@ class API(object):
             return password == hashlib.sha256(salt.encode() + user_password.encode()).hexdigest()
         return False
 
+    def create_class(self, class_name, professor_email):
+        return True

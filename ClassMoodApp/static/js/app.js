@@ -2,6 +2,11 @@
 
 /* Angular Class Mood module config */
 var app = angular.module('ClassMoodApp', ['ngRoute']);
+
+app.config(function($interpolateProvider) {
+	$interpolateProvider.startSymbol('//').endSymbol('//');
+});
+
 app.config(['$routeProvider', '$locationProvider',
 		function($routeProvider, $locationProvider) {
 		$routeProvider
