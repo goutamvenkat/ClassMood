@@ -49,4 +49,18 @@ class UserSession(db.Model):
     token = db.Column(db.Integer())
     def __init__(self, email, token_id):
         self.email = email
-        self.token = token
+        self.token = token_id
+
+def db_add(obj):
+    if obj:
+        db.session.add(obj)
+        db.session.commit()
+        return True
+    return False
+
+def db_rem(obj):
+    if obj:
+        db.session.delete(obj)
+        db.session.commit()
+        return True
+    return False

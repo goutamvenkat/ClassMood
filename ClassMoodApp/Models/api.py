@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import PickleType
 import hashlib
 import random
+
 class API(object):
     def get_student_class_list(self, email):
         student = DBModels.Student.query.filter_by(email=email).first()
@@ -25,18 +26,22 @@ class API(object):
     def is_login_valid(self, email, user_password):
         auth = DBModels.Authentication.query.filter_by(email=email).first()
         if auth:
-            password, salt = auth.password.split(':')
-            return password == hashlib.sha256(salt.encode() + user_password.encode()).hexdigest()
+            # password, salt = auth.password.split(':')
+            # return password == hashlib.sha256(salt.encode() + user_password.encode()).hexdigest()
+            return auth.password == user_password #This is to make sure it works
         return False
 
     def create_session(self, email):
-        token = hashlib.md5(email + str(random.random()).hexdigest())
+        token = 0
+        while token == 0:
+            token = int(random.random() * 10 ** 10) #nonzero token
         newsesh = DBModels.UserSession(email, token)
-        #figure out how to commit to db
-        return token
+        return token if DBModels.db_add(newsesh) else None
 
     def delete_session(self, session_token):
-        DBModels.UserSession.query.filter_by(token=session_token).delete()
-        return None
+        sesh = DBModels.UserSession.query.filter_by(token=session_token).first()
+        return DBModels.db_rem(sesh)
+
+    
     
     
