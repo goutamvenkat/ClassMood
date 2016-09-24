@@ -2,6 +2,7 @@ from . import DBModels
 from flask_sqlalchemy import SQLAlchemy
 import hashlib
 import random
+import datetime
 
 class API(object):
     def get_student_class_list(self, student_id):
@@ -21,28 +22,29 @@ class API(object):
         return None
     
     def is_login_valid(self, email, user_password):
-        auth = DBModels.Authentication.query.filter_by(email=email).first()
-        if auth:
-            # password, salt = auth.password.split(':')
-            # return password == hashlib.sha256(salt.encode() + user_password.encode()).hexdigest()
-            return auth.password == user_password #This is to make sure it works
         user = DBModels.User.query.filter_by(email=email).first()
         if user:
-            auth = DBModels.Authentication.query.filter_by(user_id=user_id).first()
+            auth = DBModels.Authentication.query.filter_by(user_id=user.id).first()
             if auth:
                 password, salt = auth.password.split(':')
                 return user.email == email and password == hashlib.sha256(salt.encode() + user_password.encode()).hexdigest()
+        return False
+
+    def is_authenticated(self, session_token):
+        sesh = DBModels.Sessions.query.filter_by(token=session_token).first()
+        if sesh and abs(sesh.expires_at - datetime.now()) > timedelta(seconds=0):
+            return True
         return False
 
     def create_session(self, email):
         token = 0
         while token == 0:
             token = int(random.random() * 10 ** 10) #nonzero token
-        newsesh = DBModels.UserSession(email, token)
+        newsesh = DBModels.Sessions(email, token)
         return token if DBModels.db_add(newsesh) else None
 
     def delete_session(self, session_token):
-        sesh = DBModels.UserSession.query.filter_by(token=session_token).first()
+        sesh = DBModels.Sessions.query.filter_by(token=session_token).first()
         return DBModels.db_rem(sesh)
 
     
