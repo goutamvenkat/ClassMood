@@ -7,5 +7,9 @@
 }
 
 #show-dialog {
-	margin-top: 10px;
+  margin-top: 20px;
+}
+
+#createclassname {
+  border-bottom: none;
 }

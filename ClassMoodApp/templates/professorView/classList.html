@@ -5,31 +5,21 @@
 
     <h2>Class List</h2>
 
-    <div ng-controller="professorClassListController">
-        <div ng-repeat="class in classList">
-  	        //class//
-        </div>
-    </div>
-
-    <!--<div ng-controller="professorClassListController">
-	    <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
-	        <thead>
-	            <tr>
-	            	<th>Name</th>
-	            </tr>
-	        </thead>
-	        <tbody>
-	        	<div ng-repeat="class in classList">
-	            	<tr>
-	            		<td class="mdl-data-table__cell--non-numeric">//class//</td>
-	            	</tr>
-	        	</div>
-	        </tbody>
-	    </table>
-	</div>-->
+	<div ng-controller="professorClassListController">
+        <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+        	<thead>
+        		<tr>
+        			<th>Name</th>
+        		</tr>
+        	</thead>
+            <tr ng-repeat="class in classList">
+            	<td class="mdl-data-table__cell--non-numeric">//class//</td>
+            </tr>
+        </table>
+	</div>
 
     <div ng-controller="dialogController">
-	    <button ng-click="openDialog()" id="show-dialog" type="button" class="mdl-button">Create Class</button>
+	    <button ng-click="openDialog()" id="show-dialog" type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Create Class</button>
 	    <dialog class="mdl-dialog">
 	        <h4 class="mdl-dialog__title">Class Name?</h4>
 	        <form action="#">
