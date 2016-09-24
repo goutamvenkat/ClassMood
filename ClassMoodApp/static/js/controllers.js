@@ -12,7 +12,7 @@ app.controller('professorClassListController', function($scope, $http, $log) {
 
 app.controller('dialogController', function($scope, $log, $http) {
 	$scope.openDialog = function() {
-		document.getElementById("createclassname").parentNode.MaterialTextfield.change('');
+		document.getElementById('createclassname').parentNode.MaterialTextfield.change('');
 		$scope.showError = false;
 		var d = document.querySelector('dialog');
 		dialog.showModal();
@@ -20,11 +20,11 @@ app.controller('dialogController', function($scope, $log, $http) {
 
 	$scope.createClicked = function() {
 		var error = true;
-		var className = document.getElementById("createclassname").value;
-		if (className !== "") {
+		var className = document.getElementById('createclassname').value;
+		if (className !== '') {
 			$http.post('/createClass/' + className)
 			.then(function successfulCallback(response) {
-				if (response.data === "True") {
+				if (response.data === 'True') {
 					error = false;
 					var d = document.querySelector('dialog');
 					d.close();

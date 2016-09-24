@@ -29,4 +29,4 @@ class API(object):
         return False
 
     def create_class(self, class_name, professor_email):
-        return True
+        return True # todo
