@@ -18,6 +18,26 @@ class API(object):
             return session.token
         return None
     
+    def create_prof_lecture(self, lecture_name, professor_id):
+        existing_lecture = DBModels.Lecture.query.filter_by(professor_id=professor_id, name=lecture_name).first()
+        if not existing_lecture:
+            new_lecture = DBModels.Lecture(professor_id=professor_id, name=lecture_name)
+            db.session.add(new_lecture)
+            db.session.commit()
+            return True
+        return False
+
+    def set_student_lecture(self, lecture_name, student_id):
+        lecture_id = DBModels.Lecture.query.filter_by(name=lecture_name).first().id
+        student_existing_lecture = DBModels.Roster.query.filter_by(student_id=student_id, 
+                                                                   lecture_id=lecture_id).first()
+        if not student_existing_lecture:
+            new_lecture = DBModels.Roster(student_id=student_id, lecture_id=lecture_id)
+            db.session.add(new_lecture)
+            db.session.commit()
+            return True
+        return False
+
     def is_login_valid(self, email, user_password):
         user = DBModels.User.query.filter_by(email=email).first()
         if user:
