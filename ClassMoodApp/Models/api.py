@@ -2,8 +2,11 @@ from . import DBModels
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import PickleType
 import hashlib
+<<<<<<< HEAD
 import random
 
+=======
+>>>>>>> dev-goutam
 class API(object):
     def get_student_class_list(self, email):
         student = DBModels.Student.query.filter_by(email=email).first()
@@ -42,6 +45,3 @@ class API(object):
         sesh = DBModels.UserSession.query.filter_by(token=session_token).first()
         return DBModels.db_rem(sesh)
 
-    
-    
-    
