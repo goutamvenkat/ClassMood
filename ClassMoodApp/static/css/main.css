@@ -5,3 +5,11 @@
   text-shadow: black 0.3em 0.3em 0.3em;
   background-image: url('/static/images/lecture.jpg');
 }
+
+#show-dialog {
+  margin-top: 20px;
+}
+
+#createclassname {
+  border-bottom: none;
+}

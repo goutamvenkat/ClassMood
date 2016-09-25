@@ -1,13 +1,13 @@
 from ClassMoodApp import app
 from ClassMoodApp.Models.DBModels import User
-from flask import render_template, request, session
+from flask import render_template, request,
 from ClassMoodApp.Models.api import API
 
 api = API()
 
 @app.route("/")
 def login():
-    if 'token' in session:
+    if api.is_authenticated():
         return render_template('authentication/authtest.html', error='You are already logged in')
     return render_template('authentication/login.html')
 
