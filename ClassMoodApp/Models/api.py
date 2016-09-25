@@ -42,7 +42,7 @@ class API(object):
     def is_login_valid(self, email, user_password):
         user = DBModels.User.query.filter_by(email=email).first()
         if user:
-            auth = DBModels.Authentication.query.filter_by(user_id=user_id).first()
+            auth = DBModels.Authentication.query.filter_by(user_id=user.id).first()
             if auth:
                 password, salt = auth.password.split(':')
                 return user.email == email and password == hashlib.sha256(salt.encode() + user_password.encode()).hexdigest()
