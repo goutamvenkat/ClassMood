@@ -96,3 +96,4 @@ def db_rem(obj):
         db.session.commit()
         return True
     return False
+
