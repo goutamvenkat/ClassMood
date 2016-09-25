@@ -60,18 +60,20 @@ class Authentication(db.Model):
 
 class Sessions(db.Model):
     __tablename__ = 'Sessions'
-    id = db.Column(db.BigInteger(), db.ForeignKey('User.id'), primary_key=True)
-    user_id = db.Column(db.BigInteger(), unique=True)
+    id = db.Column(db.BigInteger(), primary_key=True, autoincrement=True)
+    user_id = db.Column(db.BigInteger(), db.ForeignKey('User.id'), unique=True)
     token = db.Column(db.BigInteger())
     created_at = db.Column(db.DateTime())
     expires_at = db.Column(db.DateTime())
     user_relation = db.relationship('User')
     def __init__(self, user_id, token):
         self.token = token
-        self.id = uuid.uuid4().int
+        self.id = uuid.uuid4().int >> 100
         self.user_id = user_id
         self.created_at = datetime.now()
         self.expires_at = self.created_at + timedelta(hours=2)
+    def __repr__(self):
+        return "token:{}, id:{}, userid:{}, create:{}, expire:{}".format(str(self.token), str(self.id), str(self.user_id), str(self.created_at), str(self.expires_at))
 
 class Roster(db.Model):
     __tablename__ = 'Roster'
