@@ -16,5 +16,5 @@ def loginUser():
     if api.is_login_valid(email, password):
         # at this point, render new template, get a new session token (if one doesn't exist)
         # and pass it along to the template.
-        return 'VALID'
+        return render_template("studentView/classList.html")
     return render_template('authentication/login.html', error='Invalid email or password')
