@@ -18,6 +18,7 @@ def loginUser():
     if api.is_login_valid(email, password):
         # at this point, render new template, get a new session token (if one doesn't exist)
         # and pass it along to the template.
+
         session_token = api.create_session(email)
         if not session_token:
             return render_template('authentication/login.html', error='Failed to create token')
@@ -32,3 +33,5 @@ def logout():
     api.delete_session(token)
     session.pop('token', None)
     return render_template('authentication/login.html', error='You have been logged out')
+
+

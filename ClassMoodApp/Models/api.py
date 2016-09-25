@@ -5,13 +5,17 @@ import random
 import datetime
 from sqlalchemy import PickleType
 from flask import session
+import logging
+
 
 class API(object):
-    def get_student_class_list(self, student_id):
+    def get_student_lecture_list(self, student_id):
         roster = DBModels.Roster.query.filter_by(student_id=student_id).all()
+        result = []
         if roster:
-            return [lecture_id for lecture_id in roster.lecture_id]
-        return None
+            for r in roster:
+                result.append(DBModels.Lecture.query.filter_by(id=r.lecture_id).first().name)
+        return result
 
     def get_professor_class_list(self, professor_id):
         lectures = DBModels.Lecture.query.filter_by(professor_id=professor_id).all()
@@ -26,21 +30,22 @@ class API(object):
     def create_prof_lecture(self, lecture_name, professor_id):
         existing_lecture = DBModels.Lecture.query.filter_by(professor_id=professor_id, name=lecture_name).first()
         if not existing_lecture:
-            new_lecture = DBModels.Lecture(professor_id=professor_id, name=lecture_name)
-            db.session.add(new_lecture)
-            db.session.commit()
+            new_lecture = DBModels.Lecture(professor_id, '', lecture_name)
+            DBModels.db.session.add(new_lecture)
+            DBModels.db.session.commit()
             return True
         return False
 
     def set_student_lecture(self, lecture_name, student_id):
-        lecture_id = DBModels.Lecture.query.filter_by(name=lecture_name).first().id
-        student_existing_lecture = DBModels.Roster.query.filter_by(student_id=student_id, 
-                                                                   lecture_id=lecture_id).first()
-        if not student_existing_lecture:
-            new_lecture = DBModels.Roster(student_id=student_id, lecture_id=lecture_id)
-            db.session.add(new_lecture)
-            db.session.commit()
-            return True
+        lecture = DBModels.Lecture.query.filter_by(name=lecture_name).first()
+        if lecture:
+            student_existing_lecture = DBModels.Roster.query.filter_by(student_id=student_id, 
+                                                                       lecture_id=lecture.id).first()
+            if not student_existing_lecture:
+                new_lecture = DBModels.Roster(student_id, lecture.id)
+                DBModels.db.session.add(new_lecture)
+                DBModels.db.session.commit()
+                return True
         return False
 
     def is_login_valid(self, email, user_password):
@@ -48,8 +53,8 @@ class API(object):
         if user:
             auth = DBModels.Authentication.query.filter_by(user_id=user.id).first()
             if auth:
-                password, salt = auth.password.split(':')
-                return user.email == email and password == hashlib.sha256(salt.encode() + user_password.encode()).hexdigest()
+                db_password, salt = auth.password.split(':')
+                return user.email == email and db_password == hashlib.sha256(salt.encode() + user_password.encode()).hexdigest()
         return False
 
     def is_authenticated(self):
