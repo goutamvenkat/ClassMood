@@ -16,7 +16,7 @@ def getProfessorClassList():
 @app.route('/createClass/<className>', methods=['POST'])
 def createClass(className):
 	professorEmail = 'test@test.com'; # get from session token
-	successful = api.create_class(className, professorEmail)
+	successful = api.create_prof_lecture(className, professorEmail)
 	if successful:
 		return 'True'
 	else:
