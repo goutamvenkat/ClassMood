@@ -23,13 +23,13 @@ def loginUser():
         session["token"] = session_token
         usertype = api.get_access(user.user_type)
         if usertype.name == "STUDENT":
-            return render_template('authentication/authtest.html', error='You are already logged in')
-            # return render_template(url_for('student_lectures'))
+            return render_template('studentView/classList.html')
+            # return render_template(url_for('stud_home'))
         elif usertype.name == "PROFESSOR":
-            # return render_template('professorView/classlist.html')
-            return render_template('authentication/authtest.html', error='You are already logged in')
+            return render_template('professorView/classList.html')
+            # return render_template(url_for("prof_home"))
 
-    return render_template('authentication/login.html', error='Invalid email or password')
+    return render_template("authentication/login.html", error='Invalid email or password')
 
 @app.route('/logoutUser', methods=['POST'])
 def logout():
