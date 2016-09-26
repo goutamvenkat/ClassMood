@@ -1,0 +1,52 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<div class="mdl-layout mdl-js-layout" align="center" style="align-items: center;">
+
+    <h2>Class List</h2>
+
+	<div ng-controller="studentLectures">
+        <table class="mdl-data-table mdl-js-data-table mdl-shadow--2dp">
+        	<thead>
+        		<tr>
+        			<th id="classList">Name</th>
+        		</tr>
+        	</thead>
+            <tr ng-repeat="class in classList">
+            	<td class="mdl-data-table__cell--non-numeric">//class//</td>
+            </tr>
+        </table>
+	</div>
+
+    <div ng-controller="dialogController">
+	    <button ng-click="openDialog()" id="show-dialog" type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect">Add lecture</button>
+	    <dialog class="mdl-dialog">
+	        <h4 class="mdl-dialog__title">Class Name?</h4>
+	        <form action="#">
+	            <div class="mdl-dialog__content">
+	 		        <div class="mdl-textfield mdl-js-textfield">
+	                    <input class="mdl-textfield__input" type="text" ng-model="classname" id="createclassname">
+	                    <label class="mdl-textfield__label" for="createclassname">Enter a class name</label>
+	                </div>
+	            </div>
+	            <p style="color:red;" ng-show="showError">Error - Try again</p>
+	            <div class="mdl-dialog__actions">
+	                <button ng-click="createClicked()" type="button" class="mdl-button create">Add</button>
+	                <button ng-click="cancelClicked()" type="button" class="mdl-button cancel">Cancel</button>
+	            </div>
+	        </form>
+	    </dialog>
+	</div>
+
+    <script>
+	    var dialog = document.querySelector('dialog');
+	    if (! dialog.showModal) {
+	        dialogPolyfill.registerDialog(dialog);
+	    }
+    </script>
+
+
+</div>
+
+{% endblock %}
+0
