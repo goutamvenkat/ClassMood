@@ -37,5 +37,3 @@ def logout():
     api.delete_session(token)
     session.pop('token', None)
     return render_template('authentication/login.html', error='You have been logged out')
-
-

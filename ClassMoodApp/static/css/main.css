@@ -6,7 +6,6 @@
   background-image: url('/static/images/lecture.jpg');
 }
 
-
 #show-dialog {
   margin-top: 20px;
 }
@@ -16,6 +15,4 @@
 
 #createclassname {
   border-bottom: none;
-
 }
-

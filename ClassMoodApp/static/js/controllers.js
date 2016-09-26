@@ -1,6 +1,5 @@
 'use strict';
 
-
 /* Controllers for Angular */
 app.controller('professorClassListController', function($scope, $http, $log) {
 	$http.get('/getProfessorClassList')
@@ -11,7 +10,7 @@ app.controller('professorClassListController', function($scope, $http, $log) {
 	});
 });
 
-app.controller('dialogController', function($scope, $log, $http) {
+app.controller('dialogProfessorController', function($scope, $log, $http) {
 	$scope.openDialog = function() {
 		document.getElementById('createclassname').parentNode.MaterialTextfield.change('');
 		$scope.showError = false;
@@ -26,6 +25,7 @@ app.controller('dialogController', function($scope, $log, $http) {
 			$http.post('/createClass/' + className)
 			.then(function successfulCallback(response) {
 				if (response.data === 'True') {
+                    //successfully created the class
 					error = false;
 					var d = document.querySelector('dialog');
 					d.close();
@@ -35,7 +35,9 @@ app.controller('dialogController', function($scope, $log, $http) {
 		}
 		if (error) {
 			$scope.showError = true;
-		}
+		} else {
+            document.location.refresh();
+        }
 	};
 
 	$scope.cancelClicked = function() {
@@ -46,9 +48,7 @@ app.controller('dialogController', function($scope, $log, $http) {
 	$scope.showError = false;
 });
 
-var app = angular.module('ClassMoodApp');
 
-/* Controllers for Angular */
 app.controller("studentLectures", function($scope, $http) {
     // Get studentID from session token
     var studentID = 1;
@@ -59,7 +59,6 @@ app.controller("studentLectures", function($scope, $http) {
             // Handle appropriately
         });    
 });
-
 
 app.controller('dialogController', function($scope, $log, $http) {
     $scope.openDialog = function() {
@@ -73,7 +72,6 @@ app.controller('dialogController', function($scope, $log, $http) {
         // var className = document.getElementById('createclassname').value;
         var className = $scope.classname;
         var studentID = 1;
-        console.log('Class name: ' + className);
         if (className !== '') {
             $http.post('/set_student_lectures/' + className + '/' + studentID)
             .then(function successfulCallback(response) {
@@ -83,7 +81,6 @@ app.controller('dialogController', function($scope, $log, $http) {
                     document.location.reload();
                 }
             }, function errorCallBack(response) {
-                console.log("ERROR RESPONSE: " + response.data);
             });
         }
         $scope.showError = error;
@@ -96,4 +93,3 @@ app.controller('dialogController', function($scope, $log, $http) {
 
     $scope.showError = false;
 });
-
