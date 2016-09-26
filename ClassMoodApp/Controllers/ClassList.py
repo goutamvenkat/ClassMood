@@ -29,18 +29,6 @@ def createClass(className):
     else:
         return 'False'
 
-@app.route('/prof_lectures', methods=['GET'])
-def prof_lectures():
-    professor_email = 'test@test.com' # get from session token
-    lecture_list = api.get_professor_class_list(professor_email)
-    return jsonify(results=lecture_list)
-
-@app.route('/create_class/<class_name>', methods=['POST'])
-def create_class(class_name):
-    professor_email = 'test@test.com'; # get from session token
-    successful = api.create_prof_lecture(class_name, professor_email)
-    return json.dumps(successful)
-
 @app.route('/student_lectures/<int:student_id>', methods = ['GET'])
 def student_lectures(student_id):
     lecture_list = api.get_student_lecture_list(student_id)

@@ -15,7 +15,7 @@ class UserType(db.Model):
     can_add_class = db.Column(db.Boolean())
     can_list_classes = db.Column(db.Boolean())
     def __init__(self, name, can_add_class, can_list_classes):
-        self.id = uuid.uuid4().int
+        self.id = uuid.uuid4().int >> 100
         self.name = name
         self.can_add_class = can_add_class
         self.can_list_classes = can_list_classes
@@ -28,9 +28,8 @@ class User(db.Model):
     email = db.Column(db.String(400), unique=True)
     user_type = db.Column(db.BigInteger(), db.ForeignKey('UserType.id'))
     user_type_rel = db.relationship('UserType')
-
     def __init__(self, first_name, last_name, email, user_type):
-        self.id = uuid.uuid4().int
+        self.id = uuid.uuid4().int >> 100
         self.first_name = first_name
         self.last_name = last_name
         self.email = email
@@ -44,7 +43,7 @@ class Lecture(db.Model):
     professor_id = db.Column(db.BigInteger(), db.ForeignKey('User.id'))
     user_relation = db.relationship('User')
     def __init__(self, name, description, professor_id):
-        self.id = uuid.uuid4().int
+        self.id = uuid.uuid4().int >> 100
         self.name = name
         self.professor_id = professor_id
 

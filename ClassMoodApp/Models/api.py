@@ -19,7 +19,7 @@ class API(object):
 
     def get_professor_class_list(self, professor_id):
         lectures = DBModels.Lecture.query.filter_by(professor_id=professor_id).all()
-        return lectures
+        return [lecture.name for lecture in lectures]
     
     def get_user_token(self, user_id):
         session = DBModels.Sessions.query.filter_by(user_id=user_id).first()
@@ -30,7 +30,7 @@ class API(object):
     def create_prof_lecture(self, lecture_name, professor_id):
         existing_lecture = DBModels.Lecture.query.filter_by(professor_id=professor_id, name=lecture_name).first()
         if not existing_lecture:
-            new_lecture = DBModels.Lecture(professor_id, '', lecture_name)
+            new_lecture = DBModels.Lecture(lecture_name, '', professor_id)
             DBModels.db.session.add(new_lecture)
             DBModels.db.session.commit()
             return True
