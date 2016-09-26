@@ -9,18 +9,53 @@
         <script src="{{ url_for('static', filename='lib/angular/angular.js') }}"></script>
         <script src="{{ url_for('static', filename='js/app.js')}}"></script>
         <script src="{{ url_for('static', filename='js/controllers.js')}}"></script>
-        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.0rc1/angular-route.min.js"></script>
+        <script src="{{ url_for('static', filename='lib/angular/angular-route.js') }}"></script>
         <script src="{{ url_for('static', filename='lib/jquery/jquery-3.1.0.js') }}"></script>
         <script src="{{ url_for('static', filename='lib/bootstrap/bootstrap.js') }}"></script>
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-        <link rel="stylesheet" href="https://code.getmdl.io/1.2.1/material.indigo-pink.min.css">
-        <script defer src="https://code.getmdl.io/1.2.1/material.min.js"></script>
+        <style>
+            @font-face {
+              font-family: 'Material Icons';
+              font-style: normal;
+              font-weight: 400;
+              src: url({{ url_for('static', filename='fonts/MaterialIcons-Regular.eot') }}); /* For IE6-8 */
+              src: local('Material Icons'),
+               local('MaterialIcons-Regular'),
+               url({{ url_for('static', filename='fonts/MaterialIcons-Regular.woff2') }}) format('woff2'),
+               url({{ url_for('static', filename='fonts/MaterialIcons-Regular.woff') }}) format('woff'),
+               url({{ url_for('static', filename='fonts/MaterialIcons-Regular.ttf') }}) format('truetype');
+            }
+            .material-icons {
+              font-family: 'Material Icons';
+              font-weight: normal;
+              font-style: normal;
+              font-size: 24px;  /* Preferred icon size */
+              display: inline-block;
+              line-height: 1;
+              text-transform: none;
+              letter-spacing: normal;
+              word-wrap: normal;
+              white-space: nowrap;
+              direction: ltr;
 
-        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-animate.min.js"></script>
-        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-aria.min.js"></script>
-        <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.5.5/angular-messages.min.js"></script>
-        <script src="http://ajax.googleapis.com/ajax/libs/angular_material/1.1.0/angular-material.min.js"></script>
+              /* Support for all WebKit browsers. */
+              -webkit-font-smoothing: antialiased;
+              /* Support for Safari and Chrome. */
+              text-rendering: optimizeLegibility;
 
+              /* Support for Firefox. */
+              -moz-osx-font-smoothing: grayscale;
+
+              /* Support for IE. */
+              font-feature-settings: 'liga';
+            }
+        </style>
+        <link rel="stylesheet" href="{{ url_for('static', filename='css/material.css') }}">
+        <script defer src="{{ url_for('static', filename='lib/material/material.js') }}"></script>
+
+        <script src="{{ url_for('static', filename='lib/angular/angular-animate.js') }}"></script>
+        <script src="{{ url_for('static', filename='lib/angular/angular-aria.js') }}"></script>
+        <script src="{{ url_for('static', filename='lib/angular/angular-messages.js') }}"></script>
+        <script src="{{ url_for('static', filename='lib/angular/angular-material.js') }}"></script>
     </head>
     <body>
         <div class=page>
