@@ -9,6 +9,9 @@
 #show-dialog {
   margin-top: 20px;
 }
+#classList {
+	text-align: center;
+}
 
 #createclassname {
   border-bottom: none;
