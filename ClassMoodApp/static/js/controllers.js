@@ -1,5 +1,5 @@
 'use strict';
-
+var app = angular.module('ClassMoodApp');
 /* Controllers for Angular */
 app.controller('professorClassListController', function($scope, $http, $log) {
 	$http.get('/getProfessorClassList')

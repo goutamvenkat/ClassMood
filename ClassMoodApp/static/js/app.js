@@ -1,23 +1,19 @@
-'use strict';
-
-/* Angular Class Mood module config */
-
-var app = angular.module('ClassMoodApp', ['ngRoute', 'ngMaterial']);
-
-app.config(function($interpolateProvider) {
-    $interpolateProvider.startSymbol('//').endSymbol('//');
-});
-
-app.config(['$routeProvider', '$locationProvider',
-		function($routeProvider, $locationProvider) {
-		$routeProvider
-		.when( "/", {
-			templateUrl: '/templates/authentication/login.html'
-		})
-        .when("/classList", {
-            templateUrl: "/templates/studentView/classList.html"
-        });
-
-		$locationProvider.html5Mode(true);
-	}])
-;
+var ClassMoodApp;
+(function (ClassMoodApp) {
+    "use strict";
+    ClassMoodApp.app = angular.module("ClassMoodApp", ["ngRoute", "ngMaterial"]);
+    ClassMoodApp.app.config(function ($interpolateProvider) {
+        $interpolateProvider.startSymbol('//').endSymbol('//');
+    });
+    ClassMoodApp.app.config(['$routeProvider', '$locationProvider',
+        function ($routeProvider, $locationProvider) {
+            $routeProvider
+                .when("/", {
+                templateUrl: '/templates/authentication/login.html'
+            })
+                .when("/classList", {
+                templateUrl: "/templates/studentView/classList.html"
+            });
+            $locationProvider.html5Mode(true);
+        }]);
+})(ClassMoodApp || (ClassMoodApp = {}));
