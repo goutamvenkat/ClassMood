@@ -131,7 +131,15 @@ def db_add(*obj):
 def db_rem(*obj):
     if obj:
         for entry in obj:
-            db.session.delete(obj)
+            db.session.delete(entry)
+        db.session.commit()
+        return True
+    return False
+
+def db_update(*obj):
+    if obj:
+        for entry in obj:
+            db.session.merge(entry)
         db.session.commit()
         return True
     return False
