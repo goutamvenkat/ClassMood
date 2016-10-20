@@ -1,5 +1,5 @@
 from ClassMoodApp import app
-from flask import render_template, request, session
+from flask import render_template, request, session, jsonify
 from ClassMoodApp.Models.API import API
 
 @app.route("/")
@@ -34,3 +34,15 @@ def logout():
     API.delete_session(token)
     session.pop('token', None)
     return render_template('authentication/login.html', error='You have been logged out')
+
+@app.route('/getAuth', methods=['GET'])
+def get_auth():
+    usr = API.get_authentication()
+    if usr:
+        perms = API.get_access(usr.user_type)
+        ret = perms.__dict__
+        ret['id'] = usr.id #replace usertype id with user id
+        del ret['_sa_instance_state'] #remove SQLalchemy data
+    else:
+        ret = {}
+    return jsonify(results=ret)

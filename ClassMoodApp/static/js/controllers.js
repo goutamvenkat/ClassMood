@@ -52,13 +52,23 @@ app.controller('dialogProfessorController', function($scope, $log, $http) {
 
 app.controller("studentClassListController", function($scope, $http) {
     // Get studentID from session token
-    var studentID = 1;
-    $http.get('/student_classes/' + studentID)
+
+    $http.get('/getAuth')
         .then(function successfulCallback(response) {
-            $scope.classList = response.data.results;
+            var loggedIn = response.data.results
+            // if (!loggedIn.id) TODO: throw error
+            // if (!loggedIn) TODO: redirect to login page
+            if (loggedIn.can_list_classes) var studentID = loggedIn.id;
+            //probably should redirect to "access denied" page otherwise
+            $http.get('/student_classes/' + studentID)
+                .then(function successfulCallback(response) {
+                    $scope.classList = response.data.results;
+                }, function errorCallBack(response) {
+                    // Handle appropriately
+                });    
         }, function errorCallBack(response) {
-            // Handle appropriately
-        });    
+            //TODO: implement
+        });
 });
 
 app.controller('dialogController', function($scope, $log, $http) {

@@ -22,9 +22,16 @@ def createClass(className):
 
 @app.route('/student_classes/<int:student_id>', methods = ['GET'])
 def student_classes(student_id):
+    authUser = API.get_authentication()
+    if not authUser:
+        return render_template('authentication/login.html', error='You are not logged in')
     class_list = API.get_student_class_list(student_id)
     return jsonify(results = class_list)
 
 @app.route('/set_student_classes/<class_name>/<int:student_id>', methods = ['POST'])
 def set_student_classes(class_name, student_id):
+    authUser = API.get_authentication()
+    if not authUser:
+        return render_template('authentication/login.html', error='You are not logged in')
     return json.dumps(API.set_student_class(class_name, student_id))
+
