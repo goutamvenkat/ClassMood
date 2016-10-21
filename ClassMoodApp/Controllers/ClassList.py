@@ -32,20 +32,20 @@ def is_student():
         return render_template(login_page, error='You are not logged in')
     return jsonify(results=API.is_student(authUser.id))
 
-@app.route('/createClass/<className>', methods=['POST'])
+@app.route('/createClass/<className>', methods=['GET','POST'])
 def createClass(className):
     authUser = API.get_authentication()
     if not authUser:
         return render_template(login_page, error='You are not logged in')
     return json.dumps(API.create_prof_class(className, authUser.id))
 
-@app.route('/add_lecture/<class_name>')
+@app.route('/add_lecture/<class_name>', methods=['GET', 'POST'])
 def add_lecture(class_name):
     class_id = API.get_class_id(class_name)    
     new_lecture_id = API.create_live_lecture(class_id)
     return json.dumps(new_lecture_id)
 
-@app.route('/join_lecture/<int:lecture_id>')
+@app.route('/join_lecture/<int:lecture_id>', methods=['GET', 'POST'])
 def join_lecture(lecture_id):
     return json.dumps(API.add_student_to_lecture(lecture_id))
 

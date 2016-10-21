@@ -22,13 +22,7 @@ def loginUser():
             return render_template(login_page, error='Failed to create token')
         session["token"] = session_token
         usertype = API.get_access(user.user_type)
-        # if usertype.name == "STUDENT":
-        #     return render_template('studentView/classList.html')
-        #     # return render_template(url_for('stud_home'))
-        # elif usertype.name == "PROFESSOR":
-        #     return render_template('professorView/classList.html')
         return render_template(main_page, username=API.get_authentication().first_name, user_id=API.get_authentication().id)
-            # return render_template(url_for("prof_home"))
 
     return render_template(login_page, error='Invalid email or password')
 

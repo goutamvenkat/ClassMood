@@ -62,7 +62,7 @@ module ClassMoodApp {
         private setStudentClass(className: string): void {
             this.$http.get(`/set_student_classes/${className}/${this.userId}`).then(
                 (response: any) => {
-                    if (response.data === false) {
+                    if (response.data === 'false') {
                         alert('Incorrect Class!');
                     } else {
                         this.getCurrentClasses();
@@ -74,7 +74,7 @@ module ClassMoodApp {
         private setProfClass(className: string): void {
             this.$http.get(`/createClass/${className}`).then(
                 (response: any) => {
-                    if (response.data === false) {
+                    if (response.data === 'false') {
                         alert('Incorrect Class!');
                     } else {
                         this.getCurrentClasses();

@@ -53,7 +53,7 @@ var ClassMoodApp;
         ClassListController.prototype.setStudentClass = function (className) {
             var _this = this;
             this.$http.get("/set_student_classes/" + className + "/" + this.userId).then(function (response) {
-                if (response.data === false) {
+                if (response.data === 'false') {
                     alert('Incorrect Class!');
                 }
                 else {
@@ -64,7 +64,7 @@ var ClassMoodApp;
         ClassListController.prototype.setProfClass = function (className) {
             var _this = this;
             this.$http.get("/createClass/" + className).then(function (response) {
-                if (response.data === false) {
+                if (response.data === 'false') {
                     alert('Incorrect Class!');
                 }
                 else {
