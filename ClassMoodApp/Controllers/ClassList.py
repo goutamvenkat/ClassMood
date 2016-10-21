@@ -5,16 +5,6 @@ import json
 
 login_page = 'authentication/login.html'
 
-# @app.route('/getProfessorClassList', methods=['GET'])
-# def getProfessorClassList():
-#     authUser = API.get_authentication()
-#     if not authUser:
-#         return render_template('authentication/login.html', error='You are not logged in')
-#     classList = API.get_professor_class_list(authUser.id)
-#     if classList is None:
-#         classList = []
-#     return jsonify(results=classList)
-
 @app.route('/getClassList', methods=['GET'])
 def getClassList():
     authUser = API.get_authentication()
@@ -49,12 +39,15 @@ def createClass(className):
         return render_template(login_page, error='You are not logged in')
     return json.dumps(API.create_prof_class(className, authUser.id))
 
-# @app.route('/student_classes/<int:student_id>', methods = ['GET'])
-# def student_classes(student_id):
-#     class_list = API.get_student_class_list(student_id)
-#     return jsonify(results = class_list)
+@app.route('/add_lecture/<class_name>')
+def add_lecture(class_name):
+    class_id = API.get_class_id(class_name)    
+    new_lecture_id = API.create_live_lecture(class_id)
+    return json.dumps(new_lecture_id)
 
-
+@app.route('/join_lecture/<int:lecture_id>')
+def join_lecture(lecture_id):
+    return json.dumps(API.add_student_to_lecture(lecture_id))
 
 @app.route('/set_student_classes/<class_name>/<int:student_id>', methods = ['GET', 'POST'])
 def set_student_classes(class_name, student_id):

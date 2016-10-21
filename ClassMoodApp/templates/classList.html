@@ -31,8 +31,8 @@
       </tr>
       <tr ng-repeat="class in myCtrl.classes">
           <td>//class.className//</td>
-          <td><button class="btn btn-default" ng-disabled="!class.is_live">Join/Rejoin</button></td>
-          <td><button class="btn btn-primary" ng-click="myCtrl.addLecture()" ng-hide="myCtrl.isStudent" ng-disabled="class.is_live">Add Lecture</button></td>
+          <td><button class="btn btn-default" ng-click="myCtrl.joinLecture(class.liveLectureId)" ng-disabled="!class.is_live">Join/Rejoin</button></td>
+          <td><button class="btn btn-primary" ng-click="myCtrl.addLecture(class.className)" ng-hide="myCtrl.isStudent" ng-disabled="class.is_live">Add Lecture</button></td>
       </tr>
   </table>
 </div>
