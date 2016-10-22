@@ -1,5 +1,5 @@
 from ClassMoodApp import app
-from flask import render_template, jsonify
+from flask import render_template, jsonify, request
 from ClassMoodApp.Models.API import API
 import json
 
@@ -26,7 +26,9 @@ def get_live_lecture(class_id):
     authUser = API.get_authentication()
     if not authUser:
         return render_template('authentication/login.html', error='You are not logged in')
-    return json.dumps(API.get_live_lecture(class_id))
+    lectureId = API.get_live_lecture(class_id)
+    if lectureId is not None:
+        return render_template('liveView.html', username=API.get_authentication().first_name, user_id=API.get_authentication().id, lecture_id=lectureId)
 
 
 @app.route('/live_lecture/add_student/<int:lect_id>', methods = ['GET', 'POST'])
@@ -60,14 +62,16 @@ def get_student_gauge(lect_id):
         return render_template('authentication/login.html', error='You are not logged in')
     return jsonify(results=API.get_gauge_pace_and_depth(lect_id, authUser.id))
 
-@app.route('/live_lecture/gauge/put/<int:lect_id>/<string:pace_num>/<string:depth_num>', methods = ['GET', 'POST'])
-def update_student_gauge(lect_id, pace_num, depth_num):
+@app.route('/live_lecture/gauge/update', methods = ['POST'])
+def update_student_gauge():
     authUser = API.get_authentication()
     if not authUser:
         return render_template('authentication/login.html', error='You are not logged in')
     try:
-        pace_num = float(pace_num)
-        depth_num = float(depth_num)
+        json_data = request.get_json()
+        lect_id = int(json_data['lect_id'])
+        pace_num = float(json_data['pace_num'])
+        depth_num = float(json_data['depth_num'])
     except ValueError:
         return json.dumps(False)
     prev = API.get_gauge_pace_and_depth(lect_id, authUser.id)

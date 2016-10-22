@@ -15,6 +15,9 @@ module ClassMoodApp {
 		})
         .when("/classList", {
             templateUrl: "/templates/classList.html"
+        })
+        .when("/liveView", {
+            templateUrl: "/templates/liveView.html"
         });
 
 		$locationProvider.html5Mode(true);
