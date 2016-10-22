@@ -6,6 +6,11 @@
         "sourceMap": false,
         "outDir": "./ClassMoodApp/static/js"
     },
+    "files": [
+        "typings/angularjs/angular.d.ts",
+        "typings/angularjs/angular-route.d.ts",
+        "typings/jquery/jquery.d.ts"
+    ],
     "include":[
         "./ClassMoodApp/static/tsc/**/*"
     ],

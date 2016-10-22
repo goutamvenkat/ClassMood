@@ -12,7 +12,7 @@ var ClassMoodApp;
                 templateUrl: '/templates/authentication/login.html'
             })
                 .when("/classList", {
-                templateUrl: "/templates/studentView/classList.html"
+                templateUrl: "/templates/classList.html"
             });
             $locationProvider.html5Mode(true);
         }]);

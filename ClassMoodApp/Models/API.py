@@ -4,7 +4,19 @@ import random
 import datetime
 from flask import session
 
+STUDENT = 'STUDENT'
+PROFESSOR = 'PROFESSOR'
 class API(object):
+    @staticmethod
+    def is_student(user_id):
+        user = DBModels.User.query.filter_by(id=user_id).first()
+        user_type_obj = DBModels.UserType.query.filter_by(id=user.user_type).first()
+        return user_type_obj.name == STUDENT
+    @staticmethod
+    def is_professor(user_id):
+        user = DBModels.User.query.filter_by(id=user_id).first()
+        user_type_obj = DBModels.UserType.query.filter_by(id=user.user_type).first()
+        return user_type_obj.name == PROFESSOR
     @staticmethod
     def get_student_class_list(student_id):
         members = DBModels.ClassMember.query.filter_by(student_id=student_id).all()
@@ -90,6 +102,10 @@ class API(object):
         sesh = DBModels.Session.query.filter_by(token=session_token).first()
         return DBModels.db_rem(sesh)
 
+    @staticmethod
+    def get_class_id(class_name):
+        class_obj = DBModels.Class.query.filter_by(name=class_name).first()
+        return class_obj.id
 
     # return the lecture id of the lecture that is live for class_id
     @staticmethod

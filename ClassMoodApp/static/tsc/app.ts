@@ -1,8 +1,7 @@
 declare var angular: ng.IAngularStatic;
 module ClassMoodApp {
     "use strict";
-    export var app: ng.IModule =
-        angular.module("ClassMoodApp", ["ngRoute", "ngMaterial"]);
+    export var app: ng.IModule = angular.module("ClassMoodApp", ["ngRoute", "ngMaterial"]);
     
     app.config(function($interpolateProvider) {
         $interpolateProvider.startSymbol('//').endSymbol('//');
@@ -15,7 +14,7 @@ module ClassMoodApp {
 			templateUrl: '/templates/authentication/login.html'
 		})
         .when("/classList", {
-            templateUrl: "/templates/studentView/classList.html"
+            templateUrl: "/templates/classList.html"
         });
 
 		$locationProvider.html5Mode(true);
