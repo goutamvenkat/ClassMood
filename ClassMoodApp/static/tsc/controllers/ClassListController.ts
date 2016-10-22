@@ -12,6 +12,7 @@ module ClassMoodApp {
                     private $window: ng.IWindowService) {
                         this.$http = $http;
                         this.$scope = $scope;
+                        this.$window = $window;
                         this.classes = [];
                         this.getCurrentClasses();
                         this.getIsProfessor();

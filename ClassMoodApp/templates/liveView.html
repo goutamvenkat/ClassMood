@@ -1,22 +1,89 @@
 {% extends "layout.html" %}
 {% block body %}
+<nav class="navbar navbar-inverse navbar-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">Class Mood</a>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="{{url_for('login')}}"><span class="glyphicon glyphicon-home"></span></a></li>
+            <li><a>Hi {{username}}!</a></li>
+            <li><a href="{{url_for('logout')}}">Logout</a></li>
+        </ul>
+    </div>
+</nav>
 
 <div id="lectureId" lecture-id="{{lecture_id}}"></div>
 
-<div ng-controller="LiveViewController as myCtrl">
+<div class="panel panel-default container" ng-controller="LiveViewController as myCtrl">
+    <div class="row">
+        <div class="col-md-4 well">
+            <div ng-hide="!myCtrl.isStudent">
+                <h5 style="margin-top: 5px; margin-bottom: 5px">Lecture Pace</h5>
+                <div class="btn-group" data-toggle="buttons">
+                    <label class="btn btn-primary" ng-click="myCtrl.votePace(-1)">
+                        <input type="radio" name="options" id="pace1" autocomplete="off">Too Slow
+                    </label>
+                    <label class="btn btn-primary" ng-click="myCtrl.votePace(0)">
+                        <input type="radio" name="options" id="pace2" autocomplete="off">Good
+                    </label>
+                    <label class="btn btn-primary" ng-click="myCtrl.votePace(1)">
+                        <input type="radio" name="options" id="pace3" autocomplete="off">Too Fast
+                    </label>
+                </div>
+                <h5 style="margin-top: 5px; margin-bottom: 5px">Lecture Depth</h5>
+                <div class="btn-group" data-toggle="buttons">
+                    <label class="btn btn-primary" ng-click="myCtrl.voteDepth(-1)">
+                        <input type="radio" name="options" id="depth1" autocomplete="off">Too Shallow
+                    </label>
+                    <label class="btn btn-primary" ng-click="myCtrl.voteDepth(0)">
+                        <input type="radio" name="options" id="depth2" autocomplete="off">Good
+                    </label>
+                    <label class="btn btn-primary" ng-click="myCtrl.voteDepth(1)">
+                        <input type="radio" name="options" id="depth3" autocomplete="off">Too In-Depth
+                    </label>
+                </div>
+            </div>
+            <div ng-hide="myCtrl.isStudent">
+                <h5 style="margin-top: 5px; margin-bottom: 5px">Lecture Pace</h5>
+                <table style="width: 80%; margin: 0 auto">
+                    <tr>
+                        <td style="width: 33%; text-align: left">Too Slow</td>
+                        <td style="width: 33%; text-align: center">Good</td>
+                        <td style="width: 33%; text-align: right">Too Fast</td>
+                    </tr>
+                </table>
+                <input id="paceSlider" class="mdl-slider mdl-js-slider" type="range" min="-1" max="1" step="0.01" value="// myCtrl.gauge.pace_num //" disabled>
+                <h5 style="margin-top: 5px; margin-bottom: 5px">Lecture Depth</h5>
+                <table style="width: 80%; margin: 0 auto">
+                    <tr>
+                        <td style="width: 33%; text-align: left">Too Shallow</td>
+                        <td style="width: 33%; text-align: center">Good</td>
+                        <td style="width: 33%; text-align: right">Too In-Depth</td>
+                    </tr>
+                </table>
+                <input id="depthSlider" class="mdl-slider mdl-js-slider" type="range" min="-1" max="1" step="0.01" value="// myCtrl.gauge.depth_num //" disabled>
+            </div>
+        </div>
 
-	<textarea id="questionsArea" rows="6" cols="80" readonly>
-		//myCtrl.questions.questions_string//
-	</textarea>
+        <div class="col-md-8">
+            Questions
+        </div>
+    </div>
+    <div class="row">
+        <center>
+            <textarea id="questionsArea" rows="6" cols="80" readonly>
+                //myCtrl.questions.questions_string//
+            </textarea>
 
-	<div ng-show="myCtrl.isStudent">
-		<form>
-			Enter a question:
-			<input type="text" ng-model="myCtrl.questionEntered" id="questionEnter">
-			<button ng-click="myCtrl.submitPressed()">Submit</button>
-		</form>
-	</div>
-
+            <div ng-show="myCtrl.isStudent">
+                <form>
+                    Enter a question:
+                    <input type="text" ng-model="myCtrl.questionEntered" id="questionEnter">
+                    <button ng-click="myCtrl.submitPressed()">Submit</button>
+                </form>
+            </div>
+        </center>
+    </div>
 </div>
-
 {% endblock %}
