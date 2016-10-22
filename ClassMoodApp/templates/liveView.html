@@ -19,7 +19,7 @@
     <div class="row">
         <div class="col-md-4 well">
             <div ng-hide="!myCtrl.isStudent">
-                <h5 style="margin-top: 5px; margin-bottom: 5px">Lecture Pace</h5>
+                <h5 class="slider-header">Lecture Pace</h5>
                 <div class="btn-group" data-toggle="buttons">
                     <label class="btn btn-primary" ng-click="myCtrl.votePace(-1)">
                         <input type="radio" name="options" id="pace1" autocomplete="off">Too Slow
@@ -31,7 +31,7 @@
                         <input type="radio" name="options" id="pace3" autocomplete="off">Too Fast
                     </label>
                 </div>
-                <h5 style="margin-top: 5px; margin-bottom: 5px">Lecture Depth</h5>
+                <h5 class="slider-header">Lecture Depth</h5>
                 <div class="btn-group" data-toggle="buttons">
                     <label class="btn btn-primary" ng-click="myCtrl.voteDepth(-1)">
                         <input type="radio" name="options" id="depth1" autocomplete="off">Too Shallow
@@ -45,21 +45,21 @@
                 </div>
             </div>
             <div ng-hide="myCtrl.isStudent">
-                <h5 style="margin-top: 5px; margin-bottom: 5px">Lecture Pace</h5>
-                <table style="width: 80%; margin: 0 auto">
+                <h5 class="slider-header">Lecture Pace</h5>
+                <table class="slider-label-table">
                     <tr>
-                        <td style="width: 33%; text-align: left">Too Slow</td>
-                        <td style="width: 33%; text-align: center">Good</td>
-                        <td style="width: 33%; text-align: right">Too Fast</td>
+                        <td class="slider-table-left">Too Slow</td>
+                        <td class="slider-table-center">Good</td>
+                        <td class="slider-table-right">Too Fast</td>
                     </tr>
                 </table>
                 <input id="paceSlider" class="mdl-slider mdl-js-slider" type="range" min="-1" max="1" step="0.01" value="// myCtrl.gauge.pace_num //" disabled>
-                <h5 style="margin-top: 5px; margin-bottom: 5px">Lecture Depth</h5>
-                <table style="width: 80%; margin: 0 auto">
+                <h5 class="slider-header">Lecture Depth</h5>
+                <table class="slider-label-table">
                     <tr>
-                        <td style="width: 33%; text-align: left">Too Shallow</td>
-                        <td style="width: 33%; text-align: center">Good</td>
-                        <td style="width: 33%; text-align: right">Too In-Depth</td>
+                        <td class="slider-table-left">Too Shallow</td>
+                        <td class="slider-table-center">Good</td>
+                        <td class="slider-table-right">Too In-Depth</td>
                     </tr>
                 </table>
                 <input id="depthSlider" class="mdl-slider mdl-js-slider" type="range" min="-1" max="1" step="0.01" value="// myCtrl.gauge.depth_num //" disabled>
