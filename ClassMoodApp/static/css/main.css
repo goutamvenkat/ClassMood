@@ -16,3 +16,33 @@
 #createclassname {
   border-bottom: none;
 }
+
+.live-view-panel {
+  width: 80%;
+  margin: 0 auto
+}
+
+.slider-header {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.slider-label-table {
+  width: 80%;
+  margin: 0 auto
+}
+
+.slider-table-left {
+  width: 33%;
+  text-align: left;
+}
+
+.slider-table-center {
+  width: 33%;
+  text-align: center;
+}
+
+.slider-table-right {
+  width: 33%;
+  text-align: right;
+}
