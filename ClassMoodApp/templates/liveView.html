@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+{% block body %}
+
+<div id="lectureId" lecture-id="{{lecture_id}}"></div>
+
+<div ng-controller="LiveViewController as myCtrl">
+
+	<textarea id="questionsArea" rows="6" cols="80" readonly>
+		//myCtrl.questions.questions_string//
+	</textarea>
+
+	<div ng-show="myCtrl.isStudent">
+		<form>
+			Enter a question:
+			<input type="text" ng-model="myCtrl.questionEntered" id="questionEnter">
+			<button ng-click="myCtrl.submitPressed()">Submit</button>
+		</form>
+	</div>
+
+</div>
+
+{% endblock %}

@@ -26,8 +26,9 @@ def get_live_lecture(class_id):
     authUser = API.get_authentication()
     if not authUser:
         return render_template('authentication/login.html', error='You are not logged in')
-    return json.dumps(API.get_live_lecture(class_id))
-
+    lectureId = API.get_live_lecture(class_id)
+    if lectureId is not None:
+        return render_template('liveView.html', username=API.get_authentication().first_name, user_id=API.get_authentication().id, lecture_id=lectureId)
 
 @app.route('/live_lecture/add_student/<int:lect_id>', methods = ['GET', 'POST'])
 def add_live_student(lect_id):
