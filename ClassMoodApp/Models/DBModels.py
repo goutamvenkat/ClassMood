@@ -54,7 +54,7 @@ class Class(db.Model):
     description = Column(String(400))
     professor_id = Column(Integer, ForeignKey('Users.id'))
     user_relation = relationship('User')
-    live_lecture_id = Column(Integer, ForeignKey('LiveLectures.id'))
+    live_lecture_id = Column(Integer, ForeignKey('LiveLectures.id', use_alter=True, name='fk_class_live_lecture_id'))
     live_lecture_relation = relationship('LiveLecture')
     def __init__(self, name, description, professor_id):
         self.name = name
