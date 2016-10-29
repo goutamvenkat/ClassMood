@@ -21,20 +21,6 @@ class User(db.Model):
         self.email = email
         self.is_student = is_student
 
-class Class(db.Model):
-    __tablename__ = 'Classes'
-    id = Column(Integer, primary_key=True)
-    name = Column(String(40), unique=True)
-    description = Column(String(400))
-    professor_id = Column(Integer, ForeignKey('Users.id'))
-    user_relation = relationship('User')
-    live_lecture_id = Column(Integer, ForeignKey('LiveLectures.id'), nullable=True)
-    live_lecture_relation = relationship('LiveLecture')
-    def __init__(self, name, description, professor_id):
-        self.name = name
-        self.description = description
-        self.professor_id = professor_id
-
 class Authentication(db.Model):
     __tablename__ = 'Authentication'
     user_id = Column(Integer, ForeignKey('Users.id'), primary_key=True)
@@ -61,6 +47,20 @@ class Session(db.Model):
     def __repr__(self):
         return "token:{}, id:{}, userid:{}, create:{}, expire:{}".format(str(self.token), str(self.id), str(self.user_id), str(self.created_at), str(self.expires_at))
 
+class Class(db.Model):
+    __tablename__ = 'Classes'
+    id = Column(Integer, primary_key=True)
+    name = Column(String(40), unique=True)
+    description = Column(String(400))
+    professor_id = Column(Integer, ForeignKey('Users.id'))
+    user_relation = relationship('User')
+    live_lecture_id = Column(Integer, ForeignKey('LiveLectures.id'))
+    live_lecture_relation = relationship('LiveLecture')
+    def __init__(self, name, description, professor_id):
+        self.name = name
+        self.description = description
+        self.professor_id = professor_id
+
 class ClassMember(db.Model):
     __tablename__ = 'ClassMembers'
     student_id = Column(Integer, ForeignKey('Users.id'), primary_key=True)
@@ -74,8 +74,10 @@ class ClassMember(db.Model):
 class Lecture(db.Model):
     __tablename__ = 'Lectures'
     id = Column(Integer, primary_key=True)
+    name = Column(String(40), nullable=False)
     class_id = Column(Integer, ForeignKey('Classes.id'))
-    def __init__(self, class_id):
+    def __init__(self, name, class_id):
+        self.name = name
         self.class_id = class_id
 
 class LiveLecture(db.Model):
@@ -88,21 +90,21 @@ class LiveLecture(db.Model):
     def __init__(self, lecture_id):
         self.lecture_id = lecture_id
         self.pace_total = 0
-        self.depth_toal = 0
+        self.depth_total = 0
         self.num_students = 0
 
 class Gauge(db.Model):
     __tablename__ = 'Gauges'
     id = Column(Integer, primary_key=True)
     live_lecture_id = Column(Integer, ForeignKey('LiveLectures.id'))
+    student_id = Column(Integer, ForeignKey('Users.id'))
     depth = Column(Float, nullable=False)
     pace = Column(Float, nullable=False)
-    student_id = Column(Integer, ForeignKey('Users.id'))
     def __init__(self, live_lecture_id, student_id):
         self.live_lecture_id = live_lecture_id
+        self.student_id = student_id
         self.depth = 0
         self.pace = 0
-        self.student_id = student_id
 
 class AnonymousQuestion(db.Model):
     __tablename__ = 'AnonymousQuestions'
@@ -120,10 +122,10 @@ class PollingQuestion(db.Model):
     id = Column(Integer, primary_key=True)
     lecture_id = Column(Integer, ForeignKey('Lectures.id'))
     text = Column(String(1000), nullable=False)
-    a_text = Column(String(1000), nullable=True)
-    b_text = Column(String(1000), nullable=True)
-    c_text = Column(String(1000), nullable=True)
-    d_text = Column(String(1000), nullable=True)
+    a_text = Column(String(200))
+    b_text = Column(String(200))
+    c_text = Column(String(200))
+    d_text = Column(String(200))
     answer = Column(String(1), nullable=False)
     def __init__(self, lecture_id, text, a_text, b_text, c_text, d_text, answer):
         self.lecture_id = lecture_id
@@ -137,9 +139,9 @@ class PollingQuestion(db.Model):
 class PollingQuestionResponse(db.Model):
     __tablename__ = 'PollingQuestionResponses'
     id = Column(Integer, primary_key=True)
-    student_id = Column(Integer, ForeignKey('Users.id'))
-    polling_question_id = Column(Integer, ForeignKey('PollingQuestions.id'))
-    student_answer = Column(String(1))
+    student_id = Column(Integer, ForeignKey('Users.id'), nullable=False)
+    polling_question_id = Column(Integer, ForeignKey('PollingQuestions.id'), nullable=False)
+    student_answer = Column(String(1), nullable=False)
     def __init__(self, student_id, polling_question_id, student_answer):
         self.student_id = student_id
         self.polling_question_id = polling_question_id
