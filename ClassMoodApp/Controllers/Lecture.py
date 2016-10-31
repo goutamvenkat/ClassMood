@@ -5,7 +5,7 @@ import json
 
 @app.route('/add_lecture/<int:class_id>/<lecture_name>', methods=['GET', 'POST'])
 def add_lecture(class_id, lecture_name):
-    new_lecture_id = API.create_lecture(class_id, lecture_name)
+    new_lecture_id = API.create_lecture(lecture_name, class_id)
     return json.dumps(new_lecture_id)
 
 @app.route('/join_live_lecture/<int:live_lecture_id>', methods=['GET', 'POST'])
