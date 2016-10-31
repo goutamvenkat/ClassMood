@@ -18,7 +18,7 @@ class API(object):
     def is_professor(user_id):
         user = DBModels.User.query.filter_by(id=user_id).first()
         if user:
-            return ~user.is_student
+            return not user.is_student
         return False
 
     @staticmethod
