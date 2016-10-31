@@ -10,13 +10,15 @@ class API(object):
     @staticmethod
     def is_student(user_id):
         user = DBModels.User.query.filter_by(id=user_id).first()
-        user_type_obj = DBModels.UserType.query.filter_by(id=user.user_type).first()
-        return user_type_obj.name == STUDENT
+        if user:
+            return user.is_student
+        return False
     @staticmethod
     def is_professor(user_id):
         user = DBModels.User.query.filter_by(id=user_id).first()
-        user_type_obj = DBModels.UserType.query.filter_by(id=user.user_type).first()
-        return user_type_obj.name == PROFESSOR
+        if user:
+            return ~user.is_student
+        return False
     @staticmethod
     def get_student_class_list(student_id):
         members = DBModels.ClassMember.query.filter_by(student_id=student_id).all()
@@ -83,10 +85,6 @@ class API(object):
         return None
 
     @staticmethod
-    def get_access(typeid):
-        return DBModels.UserType.query.filter_by(id=typeid).first()
-
-    @staticmethod
     def create_session(userid):
         token = 0
         while token == 0:
@@ -107,108 +105,115 @@ class API(object):
         class_obj = DBModels.Class.query.filter_by(name=class_name).first()
         return class_obj.id
 
-    # return the lecture id of the lecture that is live for class_id
+    # return the live lecture id of the live lecture that is live for class_id
     @staticmethod
     def get_live_lecture(class_id):
-        lecture = DBModels.Lecture.query.filter_by(class_id=class_id, is_live=True).first()
-        if lecture:
-            return lecture.id
+        live_class = DBModels.Class.query.filter_by(id=class_id)
+        if live_class and live_class.live_lecture_id:
+            live_lecture = DBModels.LiveLecture.query.filter_by(id=live_class.live_lecture_id).first()
+            if live_lecture:
+                return live_lecture.id
         return None
 
     # disables the lecture that is live of class_id
     @staticmethod
     def disable_live_lecture(class_id):
-        lecture = DBModels.Lecture.query.filter_by(class_id=class_id, is_live=True).first()
-        if lecture:
-            lecture.is_live = False
-            return DBModels.db_update(lecture)
+        live_class = DBModels.Class.query.filter_by(id=class_id).first()
+        if live_class:
+            live_class.live_lecture_id = None
+            return DBModels.db_update(live_class)
         return False
 
     # create a lecture that is live and returns the lecture id
     @staticmethod
-    def create_live_lecture(class_id):
-        new_lecture = DBModels.Lecture(class_id)
-        new_lecture.is_live = True
-        if DBModels.db_add(new_lecture):
-            return new_lecture.id
+    def create_live_lecture(lecture_id):
+        lecture = DBModels.Lecture.query.filter_by(id=lecture_id).first()
+        if lecture:
+            lecture_class = DBModels.Class.query.filter_by(id=lecture.class_id).first()
+            if lecture_class:
+                new_live_lecture = DBModels.LiveLecture(lecture_id)
+                if DBModels.db_add(new_live_lecture):
+                    lecture_class.live_lecture_id
+                    DBModels.db_update(lecture_class)
+                    return new_live_lecture.id
         return None
 
-    # add a student to the lecture
+    # add a student to the live lecture
     @staticmethod
-    def add_student_to_lecture(lecture_id):
-        lecture = DBModels.Lecture.query.filter_by(id=lecture_id).first()
-        if lecture:
-            lecture.num_students += 1
-            return DBModels.db_update(lecture)
+    def add_student_to_lecture(live_lecture_id):
+        live_lecture = DBModels.LiveLecture.query.filter_by(id=live_lecture_id).first()
+        if live_lecture:
+            live_lecture.num_students += 1
+            return DBModels.db_update(live_lecture)
         return False
 
-    # get pace for a lecture
+    # get pace for a live lecture
     @staticmethod
-    def get_pace(lecture_id):
-        lecture = DBModels.Lecture.query.filter_by(id=lecture_id).first()
-        if lecture:
-            return lecture.pace_total / lecture.num_students
+    def get_pace(live_lecture_id):
+        live_lecture = DBModels.LiveLecture.query.filter_by(id=live_lecture_id).first()
+        if live_lecture:
+            return live_lecture.pace_total / live_lecture.num_students
         return None
 
-    # get depth for a lecture
+    # get depth for a live lecture
     @staticmethod
-    def get_depth(lecture_id):
-        lecture = DBModels.Lecture.query.filter_by(id=lecture_id).first()
-        if lecture:
-            return lecture.depth_total / lecture.num_students
+    def get_depth(live_lecture_id):
+        live_lecture = DBModels.LiveLecture.query.filter_by(id=live_lecture_id).first()
+        if live_lecture:
+            return live_lecture.depth_total / live_lecture.num_students
         return None
 
-    # change the total pace by num for lecture
+    # change the total pace by num for live lecture
     @staticmethod
-    def change_total_pace_by(lecture_id, num):
-        lecture = DBModels.Lecture.query.filter_by(id=lecture_id).first()
-        if lecture:
-            lecture.pace_total += num
-            return DBModels.db_update(lecture)
+    def change_total_pace_by(live_lecture_id, num):
+        live_lecture = DBModels.LiveLecture.query.filter_by(id=live_lecture_id).first()
+        if live_lecture:
+            live_lecture.pace_total += num
+            return DBModels.db_update(live_lecture)
         return False
 
-    # change the total depth by num for lecture
+    # change the total depth by num for live lecture
     @staticmethod
-    def change_total_depth_by(lecture_id, num):
-        lecture = DBModels.Lecture.query.filter_by(id=lecture_id).first()
-        if lecture:
-            lecture.depth_total += num
-            return DBModels.db_update(lecture)
+    def change_total_depth_by(live_lecture_id, num):
+        live_lecture = DBModels.LiveLecture.query.filter_by(id=live_lecture_id).first()
+        if live_lecture:
+            live_lecture.depth_total += num
+            return DBModels.db_update(live_lecture)
         return False
 
-    # return the current pace and depth for student in lecture
+    # return the current pace and depth for student in live lecture
     @staticmethod
-    def get_gauge_pace_and_depth(lecture_id, student_id):
-        gauge = DBModels.Gauge.query.filter_by(lecture_id=lecture_id, student_id=student_id).first()
+    def get_gauge_pace_and_depth(live_lecture_id, student_id):
+        gauge = DBModels.Gauge.query.filter_by(live_lecture_id=live_lecture_id, student_id=student_id).first()
         if gauge:
             return (gauge.pace, gauge.depth)
         return None
 
     # add or update the current pace and depth for student in lecture
     @staticmethod
-    def update_gauge_pace_and_depth(lecture_id, student_id, pace_num, depth_num):
-        gauge = DBModels.Gauge.query.filter_by(lecture_id=lecture_id, student_id=student_id).first()
+    def update_gauge_pace_and_depth(live_lecture_id, student_id, pace_num, depth_num):
+        gauge = DBModels.Gauge.query.filter_by(live_lecture_id=live_lecture_id, student_id=student_id).first()
         if gauge:
             gauge.depth = depth_num
             gauge.pace = pace_num
             return DBModels.db_update(gauge)
         else:
-            new_gauge = DBModels.Gauge(lecture_id, student_id)
+            new_gauge = DBModels.Gauge(live_lecture_id, student_id)
             new_gauge.depth = depth_num
             new_gauge.pace = pace_num
             return DBModels.db_add(new_gauge)
 
-    # return the question texts for a lecture
+    # return the question texts for a live lecture
     @staticmethod
-    def get_anonymous_questions(lecture_id):
-        questions = DBModels.AnonymousQuestion.query.filter_by(lecture_id=lecture_id).all()
+    def get_anonymous_questions(live_lecture_id):
+        questions = DBModels.AnonymousQuestion.query.filter_by(live_lecture_id=live_lecture_id).all()
         if questions:
             return [q.text for q in questions]
         return []
 
     # add a question for a lecture
     @staticmethod
-    def add_anonymous_question(lecture_id, student_id, text):
-        question = DBModels.AnonymousQuestion(lecture_id, text, student_id)
+    def add_anonymous_question(live_lecture_id, student_id, text):
+        question = DBModels.AnonymousQuestion(live_lecture_id, text, student_id)
         return DBModels.db_update(question)
 
