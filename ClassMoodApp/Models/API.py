@@ -110,7 +110,7 @@ class API(object):
     # return the live lecture id of the live lecture that is live for class_id
     @staticmethod
     def get_live_lecture(class_id):
-        live_class = DBModels.Class.query.filter_by(id=class_id)
+        live_class = DBModels.Class.query.filter_by(id=class_id).first()
         if live_class and live_class.live_lecture_id:
             live_lecture = DBModels.LiveLecture.query.filter_by(id=live_class.live_lecture_id).first()
             if live_lecture:
@@ -141,7 +141,7 @@ class API(object):
             if lecture_class:
                 new_live_lecture = DBModels.LiveLecture(lecture_id)
                 if DBModels.db_add(new_live_lecture):
-                    lecture_class.live_lecture_id
+                    lecture_class.live_lecture_id = new_live_lecture.id
                     DBModels.db_update(lecture_class)
                     return new_live_lecture.id
         return None

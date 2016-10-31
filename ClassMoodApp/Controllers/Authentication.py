@@ -21,7 +21,6 @@ def loginUser():
         if not session_token:
             return render_template(login_page, error='Failed to create token')
         session["token"] = session_token
-        usertype = API.get_access(user.user_type)
         return render_template(main_page, username=API.get_authentication().first_name, user_id=API.get_authentication().id)
 
     return render_template(login_page, error='Invalid email or password')

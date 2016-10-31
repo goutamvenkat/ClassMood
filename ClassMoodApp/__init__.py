@@ -98,4 +98,4 @@ if app.config.get('TESTING', False):
         cs102LectureQuestionResponse = PollingQuestionResponse(studentUser.id, cs102LectureQuestion.id, "B")
         db_add(cs101LectureAQuestionResponse, cs101LectureAQuestionResponseOther, cs102LectureQuestionResponse)
 
-# from ClassMoodApp.Controllers import *
+from ClassMoodApp.Controllers import *
