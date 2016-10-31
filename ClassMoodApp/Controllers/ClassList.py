@@ -39,16 +39,6 @@ def createClass(className):
         return render_template(login_page, error='You are not logged in')
     return json.dumps(API.create_prof_class(className, authUser.id))
 
-@app.route('/add_lecture/<class_name>', methods=['GET', 'POST'])
-def add_lecture(class_name):
-    class_id = API.get_class_id(class_name)    
-    new_lecture_id = API.create_live_lecture(class_id)
-    return json.dumps(new_lecture_id)
-
-@app.route('/join_lecture/<int:lecture_id>', methods=['GET', 'POST'])
-def join_lecture(lecture_id):
-    return json.dumps(API.add_student_to_lecture(lecture_id))
-
 @app.route('/set_student_classes/<class_name>/<int:student_id>', methods = ['GET', 'POST'])
 def set_student_classes(class_name, student_id):
     return json.dumps(API.set_student_class(class_name, student_id))

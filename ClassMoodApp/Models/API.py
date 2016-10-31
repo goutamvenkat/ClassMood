@@ -13,12 +13,14 @@ class API(object):
         if user:
             return user.is_student
         return False
+
     @staticmethod
     def is_professor(user_id):
         user = DBModels.User.query.filter_by(id=user_id).first()
         if user:
             return ~user.is_student
         return False
+
     @staticmethod
     def get_student_class_list(student_id):
         members = DBModels.ClassMember.query.filter_by(student_id=student_id).all()
@@ -124,7 +126,13 @@ class API(object):
             return DBModels.db_update(live_class)
         return False
 
-    # create a lecture that is live and returns the lecture id
+    # create a lecture with a given name
+    @staticmethod
+    def create_lecture(lecture_name, class_id):
+        new_lecture = DBModels.Lecture(lecture_name, class_id)
+        return DBModels.db_add(new_lecture)
+
+    # create a lecture that is live and returns the live lecture id
     @staticmethod
     def create_live_lecture(lecture_id):
         lecture = DBModels.Lecture.query.filter_by(id=lecture_id).first()
@@ -140,7 +148,7 @@ class API(object):
 
     # add a student to the live lecture
     @staticmethod
-    def add_student_to_lecture(live_lecture_id):
+    def add_student_to_live_lecture(live_lecture_id):
         live_lecture = DBModels.LiveLecture.query.filter_by(id=live_lecture_id).first()
         if live_lecture:
             live_lecture.num_students += 1
