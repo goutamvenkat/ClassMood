@@ -3,12 +3,13 @@ declare var angular: ng.IAngularStatic;
 module ClassMoodApp {
     "use strict";
     export class ClassListController {
-        static $inject = ["$scope", "$http"];
+        static $inject = ["$scope", "$http", "$window"];
         public classes:Array<ClassListModel>;
         public isStudent: boolean;
         private userId: number;
         constructor(private $scope: ng.IScope,
-                    private $http: ng.IHttpService) {
+                    private $http: ng.IHttpService,
+                    private $window: ng.IWindowService) {
                         this.$http = $http;
                         this.$scope = $scope;
                         this.classes = [];
@@ -102,6 +103,7 @@ module ClassMoodApp {
                 )
             }
             // At this point just open the lecture page so that students and professor are both viewing the same material (Except for gauges).
+            this.$window.location.href = `/live_lecture/get/${liveLectureId}`;
         }
     }
     app.controller('ClassListController', ClassListController);

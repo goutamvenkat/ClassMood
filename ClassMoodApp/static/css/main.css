@@ -16,3 +16,11 @@
 #createclassname {
   border-bottom: none;
 }
+
+#questionsArea {
+  text-indent:-62px;
+}
+
+#questionEnter {
+  width: 475px;
+}

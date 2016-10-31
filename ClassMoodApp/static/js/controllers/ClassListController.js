@@ -3,9 +3,10 @@ var ClassMoodApp;
 (function (ClassMoodApp) {
     "use strict";
     var ClassListController = (function () {
-        function ClassListController($scope, $http) {
+        function ClassListController($scope, $http, $window) {
             this.$scope = $scope;
             this.$http = $http;
+            this.$window = $window;
             this.$http = $http;
             this.$scope = $scope;
             this.classes = [];
@@ -85,8 +86,9 @@ var ClassMoodApp;
                 });
             }
             // At this point just open the lecture page so that students and professor are both viewing the same material (Except for gauges).
+            this.$window.location.href = "/live_lecture/get/" + liveLectureId;
         };
-        ClassListController.$inject = ["$scope", "$http"];
+        ClassListController.$inject = ["$scope", "$http", "$window"];
         return ClassListController;
     }());
     ClassMoodApp.ClassListController = ClassListController;
