@@ -42,3 +42,10 @@ def createClass(className):
 @app.route('/set_student_classes/<class_name>/<int:student_id>', methods = ['GET', 'POST'])
 def set_student_classes(class_name, student_id):
     return json.dumps(API.set_student_class(class_name, student_id))
+
+@app.route('/delete/class/<int:class_id>', methods = ['GET', 'POST'])
+def delete_class(class_id):
+    authUser = API.get_authentication()
+    if not authUser:
+        return render_template('authentication/login.html', error='You are not logged in')
+    return jsonify(results=API.delete_class(class_id))

@@ -225,3 +225,85 @@ class API(object):
         question = DBModels.AnonymousQuestion(live_lecture_id, text, student_id)
         return DBModels.db_update(question)
 
+
+    # list all the lectures in a class
+    @staticmethod
+    def get_lecture_list(class_id):
+        lectures = DBModels.Lecture.query.filter_by(class_id=class_id).all()
+        idAndNames = []
+        if lectures:
+            for l in lectures:
+                idAndNames.append([l.id, l.name])
+        return idAndNames
+
+    # create a polling question
+    @staticmethod
+    def create_polling_question(lecture_id, q_text, a_text, b_text, c_text, d_text, ans):
+        question = DBModels.PollingQuestion(lecture_id, q_text, a_text, b_text, c_text, d_text, ans)
+        return DBModels.db_add(question)
+
+    # list all polling questions for a lecture
+    @staticmethod
+    def get_polling_questions(lecture_id):
+        questions = DBModels.PollingQuestion.query.filter_by(lecture_id=lecture_id).all()
+        questionInformation = []
+        if questions:
+            for q in questions:
+                questionInformation.append([q.id, q.text, q.answer])
+        return questionInformation
+
+    # delete a single polling question
+    # this deletes the polling question and reponses
+    @staticmethod
+    def delete_polling_question(polling_question_id):
+        question = DBModels.PollingQuestion.query.filter_by(id=polling_question_id).first()
+        if question:
+            DBModels.db_rem(question)
+        responses = DBModels.PollingQuestionResponse.query.filter_by(polling_question_id=polling_question_id).all()
+        if responses:
+            for r in responses:
+                DBModels.db_rem(r)
+        return True
+
+    # delete a single lecture
+    # this deletes the lecture (polling questions, polling question responses)
+    # and live lecture (gauges, anonymous questions)
+    @staticmethod
+    def delete_lecture(lecture_id):
+        live_lecture = DBModels.LiveLecture.query.filter_by(lecture_id=lecture_id).first()
+        if live_lecture:
+            DBModels.db_rem(live_lecture)
+            gauges = DBModels.Gauge.query.filter_by(live_lecture_id=live_lecture.id).all()
+            if gauges:
+                for g in gauges:
+                    DBModels.db_rem(g)
+            anonymous_questions = DBModels.AnonymousQuestion.query.filter_by(live_lecture_id=live_lecture.id).all()
+            if anonymous_questions:
+                for aq in anonymous_questions:
+                    DBModels.db_rem(aq)
+        polling_questions = DBModels.PollingQuestion.query.filter_by(lecture_id=lecture_id).all()
+        if polling_questions:
+            for pq in polling_questions:
+                API.delete_polling_question(pq.id)
+        lecture = DBModels.Lecture.query.filter_by(id=lecture_id).first()
+        if lecture:
+            DBModels.db_rem(lecture)
+        return True
+
+    # delete a single class
+    # this deletes the class (class members)
+    # and all lectures
+    @staticmethod
+    def delete_class(class_id):
+        lectures = DBModels.Lecture.query.filter_by(class_id=class_id).all()
+        if lectures:
+            for l in lectures:
+                API.delete_lecture(l.id)
+        class_members = DBModels.ClassMember.query.filter_by(class_id=class_id).all()
+        if class_members:
+            for cm in class_members:
+                DBModels.db_rem(cm)
+        classToDelete = DBModels.Class.query.filter_by(id=class_id)
+        if classToDelete:
+            DBModels.db_rem(classToDelete)
+        return True

@@ -99,3 +99,38 @@ def add_anon_question(live_lect_id, text):
     if not authUser:
         return render_template('authentication/login.html', error='You are not logged in')
     return json.dumps(API.add_anonymous_question(live_lect_id, authUser.id, text))
+
+@app.route('/get_lecture_list/<int:class_id>', methods = ['GET', 'POST'])
+def get_lecture_list(class_id):
+    authUser = API.get_authentication()
+    if not authUser:
+        return render_template('authentication/login.html', error='You are not logged in')
+    return jsonify(results=API.get_lecture_list(class_id))
+
+@app.route('/create_polling_question/<int:lecture_id>/<string:qtext>/<string:atext>/<string:btext>/<string:ctext>/<string:dtext>/<string:ans>', methods = ['GET', 'POST'])
+def create_polling_question(lecture_id, qtext, atext, btext, ctext, dtext, ans):
+    authUser = API.get_authentication()
+    if not authUser:
+        return render_template('authentication/login.html', error='You are not logged in')
+    return jsonify(results=API.create_polling_question(lecture_id, qtext, atext, btext, ctext, dtext, ans))
+
+@app.route('/get_polling_questions/<int:lecture_id>', methods = ['GET', 'POST'])
+def get_polling_questions(lecture_id):
+    authUser = API.get_authentication()
+    if not authUser:
+        return render_template('authentication/login.html', error='You are not logged in')
+    return jsonify(results=API.get_polling_questions(lecture_id))
+
+@app.route('/delete/polling_question/<int:polling_question_id>', methods = ['GET', 'POST'])
+def delete_polling_question(polling_question_id):
+    authUser = API.get_authentication()
+    if not authUser:
+        return render_template('authentication/login.html', error='You are not logged in')
+    return jsonify(results=API.delete_polling_question(polling_question_id))
+
+@app.route('/delete/lecture/<int:lecture_id>', methods = ['GET', 'POST'])
+def delete_lecture(lecture_id):
+    authUser = API.get_authentication()
+    if not authUser:
+        return render_template('authentication/login.html', error='You are not logged in')
+    return jsonify(results=API.delete_lecture(lecture_id))
