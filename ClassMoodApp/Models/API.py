@@ -87,6 +87,30 @@ class API(object):
         return None
 
     @staticmethod
+    def is_google_account():
+        user = API.get_authentication()
+        if user:
+            auth = DBModels.Authentication.query.filter_by(user_id=user.id).first()
+            return auth and auth.provider == DBModels.Providers.GOOGLE
+        return False
+
+    @staticmethod
+    def get_google_user(email, name):
+        existing_google_user = DBModels.User.query.filter_by(email=email).first()
+        if not existing_google_user:
+            fname, lname = name.split()
+            new_google_user = DBModels.User(fname, lname, email, True)
+            DBModels.db_add(new_google_user)
+            new_auth = DBModels.Authentication(new_google_user.id, 'blah:blah', DBModels.Providers.GOOGLE)
+            DBModels.db_add(new_auth)
+            # API.create_session(new_google_user.id)
+            return new_google_user
+        # API.create_session(existing_google_user.id)
+        return existing_google_user
+
+
+
+    @staticmethod
     def create_session(userid):
         token = 0
         while token == 0:

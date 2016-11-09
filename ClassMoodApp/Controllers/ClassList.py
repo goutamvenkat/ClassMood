@@ -4,6 +4,15 @@ from ClassMoodApp.Models.API import API
 import json
 
 login_page = 'authentication/login.html'
+main_page = 'classList.html'
+
+
+@app.route('/classList', methods=['GET'])
+def classList():
+    authUser = API.get_authentication()
+    if not authUser:
+        return render_template(login_page, error='You are not logged in')
+    return render_template(main_page, username=API.get_authentication().first_name, user_id=API.get_authentication().id)
 
 @app.route('/getClassList', methods=['GET'])
 def getClassList():
