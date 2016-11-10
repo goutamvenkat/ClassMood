@@ -74,12 +74,26 @@ var ClassMoodApp;
                 }
             });
         };
-        ClassListController.prototype.addLecture = function (className) {
-            var _this = this;
-            this.$http.get("/add_lecture/" + className).then(function (response) {
-                console.log("NEW LECTURE ID: " + response.data);
-            }).then(function () { _this.getCurrentClasses(); });
+        ClassListController.prototype.createLecture = function () {
+            bootbox.prompt({
+                title: "Enter Class Name",
+                inputType: 'textarea',
+                callback: function (className) {
+                    if (className != null) {
+                        console.log(className);
+                    }
+                }
+            });
         };
+        // public addLecture(className:string): void {
+        //     this.$http.get(`/add_lecture/${className}`).then(
+        //         (response: any) => {
+        //             console.log(`NEW LECTURE ID: ${response.data}`);
+        //         }
+        //     ).then(
+        //         () => {this.getCurrentClasses();}
+        //     )
+        // }
         ClassListController.prototype.joinLecture = function (liveLectureId) {
             if (this.isStudent === true) {
                 this.$http.get("/join_lecture/" + liveLectureId).then(function (response) {

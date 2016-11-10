@@ -1,5 +1,6 @@
 {% extends "layout.html" %}
 {% block body %}
+<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
 <nav class="navbar navbar-inverse navbar-top">
     <div class="container-fluid">
         <div class="navbar-header">
@@ -14,15 +15,20 @@
     </div>
 </nav>
 <script type="text/javascript">
+	function onLoad() {
+		gapi.load('auth2', function() {
+        	gapi.auth2.init();
+      	});
+	}
 	function logout() {
 		$.get('/is_google_user').then(
 			function (data, status) {
 				console.log(data.results);
 				if (data.results === true) {
+					
 					var auth2 = gapi.auth2.getAuthInstance();
     					auth2.signOut().then(function () {
       					console.log('User signed out.');
-      					setTimeout(function(){}, 2000);
     				});
 				}
 				$.get('/logoutUser').then(
