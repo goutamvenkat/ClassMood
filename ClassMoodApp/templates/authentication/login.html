@@ -27,9 +27,31 @@
                     <div class="mdl-card__actions">
                         <button type="submit" class="mdl-button mdl-button--colored mdl-js-button mdl-js-ripple-effect">Sign In</button>
                     </div>
+                    <div class="g-signin2" data-onsuccess="onSignIn"></div>
+                    <!-- <button ng-click="myCtrl.onSignIn()"></button> -->
                 </form>
             </div>
         </div>
     </main>
 </div>
+
+<script type="text/javascript">
+    function onSignIn(googleUser) {
+        var profile = googleUser.getBasicProfile();
+        console.log('ID: ' + profile.getId());
+        console.log('Name: ' + profile.getName());
+        console.log('Image URL: ' + profile.getImageUrl());
+        console.log('Email: ' + profile.getEmail());
+
+        updateGoogleSignIn(profile.getEmail(), profile.getName());
+    }
+
+    function updateGoogleSignIn(email, name) {
+        var url = "/loginUser/"+email + "/" + name;
+        $.get(url, function (data, status) {
+            console.log("SUCCESSFUL POSTING");
+            window.location.reload();
+        })
+    }
+</script>
 {% endblock %}

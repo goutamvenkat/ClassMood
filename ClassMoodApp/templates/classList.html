@@ -1,22 +1,11 @@
-{% extends "layout.html" %}
-{% block body %}
-<nav class="navbar navbar-inverse navbar-top">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">Class Mood</a>
-        </div>
-        <ul class="nav navbar-nav navbar-right">
-            <li><a href="{{url_for('login')}}"><span class="glyphicon glyphicon-home"></span></a></li>
-            <li><a>Hi {{username}}!</a></li>
-            <li><a href="{{url_for('logout')}}">Logout</a></li>
-        </ul>
-    </div>
-</nav>
+{% extends "baseHomePage.html" %}
+{% block newPage %}
 <div class="panel panel-default" ng-controller="ClassListController as myCtrl">
   <!-- Default panel contents -->
   <div class="panel-heading clearfix">
       Your Classes
       <button type="button" class="btn btn-primary pull-right" ng-click="myCtrl.addClass()">Add Class</button>
+      <button type="button" class="btn btn-primary pull-right" ng-click="myCtrl.createLecture()">Create</button>
   </div>
   <div class="panel-body">
     
@@ -27,12 +16,12 @@
       <tr>
         <th>Class</th>
         <th>Live Lecture</th>
-        <th ng-hide="myCtrl.isStudent">Add Lecture</th>
+        <!-- <th ng-hide="myCtrl.isStudent">Add Lecture</th> -->
       </tr>
       <tr ng-repeat="class in myCtrl.classes">
-          <td>//class.className//</td>
-          <td><button class="btn btn-default" ng-click="myCtrl.joinLecture(class.liveLectureId)" ng-disabled="!class.is_live">Join/Rejoin</button></td>
-          <td><button class="btn btn-primary" ng-click="myCtrl.addLecture(class.className)" ng-hide="myCtrl.isStudent" ng-disabled="class.is_live">Add Lecture</button></td>
+          <td><button class="btn btn-info" ng-disabled="myCtrl.isStudent">//class.className//</button></td>
+          <td><button class="btn btn-default" ng-click="myCtrl.joinLecture(class.liveLectureId)" ng-disabled="!class.is_live">Join</button></td>
+          <!-- <td><button class="btn btn-primary" ng-click="myCtrl.addLecture(class.className)" ng-hide="myCtrl.isStudent" ng-disabled="class.is_live">Add Lecture</button></td> -->
       </tr>
   </table>
 </div>

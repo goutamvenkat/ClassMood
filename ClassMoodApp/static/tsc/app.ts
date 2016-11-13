@@ -7,7 +7,7 @@ module ClassMoodApp {
         $interpolateProvider.startSymbol('//').endSymbol('//');
     });
 
-    app.config(['$routeProvider', '$locationProvider', 
+    app.config(['$routeProvider', '$locationProvider',
             ($routeProvider, $locationProvider) => {
 		$routeProvider
 		.when( "/", {
@@ -22,4 +22,6 @@ module ClassMoodApp {
 
 		$locationProvider.html5Mode(true);
 	}]);
+
+
 }

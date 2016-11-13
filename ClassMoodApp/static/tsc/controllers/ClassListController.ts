@@ -85,15 +85,28 @@ module ClassMoodApp {
             )
         }
 
-        public addLecture(className:string): void {
-            this.$http.get(`/add_lecture/${className}`).then(
-                (response: any) => {
-                    console.log(`NEW LECTURE ID: ${response.data}`);
+        public createLecture(): void {
+            bootbox.prompt({
+                title: "Enter Class Name",
+                inputType: 'textarea',
+                callback: (className: string) => {
+                    if (className != null) {
+                        console.log(className);
+                        // go to the lecture list page
+                    } 
                 }
-            ).then(
-                () => {this.getCurrentClasses();}
-            )
+            });
         }
+
+        // public addLecture(className:string): void {
+        //     this.$http.get(`/add_lecture/${className}`).then(
+        //         (response: any) => {
+        //             console.log(`NEW LECTURE ID: ${response.data}`);
+        //         }
+        //     ).then(
+        //         () => {this.getCurrentClasses();}
+        //     )
+        // }
 
         public joinLecture(liveLectureId: number): void {
             if (this.isStudent === true) {

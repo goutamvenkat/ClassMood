@@ -8,6 +8,10 @@ from datetime import datetime, timedelta
 
 db = SQLAlchemy()
 
+class Providers(object):
+    USERPASS = 'USERPASS'
+    GOOGLE = 'GOOGLE'
+
 class User(db.Model):
     __tablename__ = 'Users'
     id = Column(Integer, primary_key=True)
@@ -23,12 +27,15 @@ class User(db.Model):
 
 class Authentication(db.Model):
     __tablename__ = 'Authentication'
-    user_id = Column(Integer, ForeignKey('Users.id'), primary_key=True)
+    user_id = Column(Integer, ForeignKey('Users.id'), primary_key=True, autoincrement=False)
     password = Column(String(sys.maxint))
+    provider = Column(String(40))
+
     user_relation = relationship('User')
-    def __init__(self, user_id, password):
+    def __init__(self, user_id, password, provider=Providers.USERPASS):
         self.user_id = user_id
         salt = uuid.uuid4().hex
+        self.provider = provider
         self.password = '{}:{}'.format(hashlib.sha256(salt.encode() + password.encode()).hexdigest(), salt)
 
 class Session(db.Model):
