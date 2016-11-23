@@ -1,0 +1,31 @@
+{% extends "baseHomePage.html" %}
+{% block newPage %}
+<div class="panel panel-default">
+  <div class="panel-heading clearfix">
+    <span style="margin-left:20px"> <b>Create New Polling Question </b></span>
+  </div>
+  <div class="panel-body" ng-controller="CreatePollingQuestionController as ctrl">
+    <form ng-submit="ctrl.submitPollingQuestion()" style="margin-left:20px">
+      Polling Question Text
+      <br>
+      <textarea rows="4" cols="50" ng-model="ctrl.question_text"></textarea>
+      <br><br>
+      <b>Answer Choices (use radio button to select the correct answer):</b> <br>
+      <label class="radio" style="margin-left:20px">
+        <input type="radio" name="question" ng-model="ctrl.ans" ng-value="ctrl.a_text" style="margin-top:6px"/>
+        A: <input type="text" ng-change="ctrl.ans = ctrl.a_text" ng-model="ctrl.a_text"/><br>
+
+        <input type="radio" name="question" ng-model="ctrl.ans" ng-value="ctrl.b_text" style="margin-top:6px"/>
+        B: <input type="text" ng-change="ctrl.ans = ctrl.b_text" ng-model="ctrl.b_text"/><br>
+
+        <input type="radio" name="question" ng-model="ctrl.ans" ng-value="ctrl.c_text" style="margin-top:6px"/>
+        C: <input type="text" ng-change="ctrl.ans = ctrl.c_text" ng-model="ctrl.c_text"/><br>
+        <input type="radio" name="question" ng-model="ctrl.ans" ng-value="ctrl.d_text" style="margin-top:6px"/>
+        D: <input type="text" ng-change="ctrl.ans = ctrl.d_text" ng-model="ctrl.d_text"/><br>
+        <br>
+        <input type="submit" value="Save Question">
+      </label>
+    </form>
+  </div>
+</div>
+{% endblock %}

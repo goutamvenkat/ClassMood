@@ -29,9 +29,9 @@ def getClassList():
         class_id = API.get_class_id(each_class)
         live_lecture_id = API.get_live_lecture(class_id)
         if live_lecture_id:
-            class_info.append({'className': each_class, 'liveLectureId': live_lecture_id, 'is_live': True})
+            class_info.append({'className': each_class, 'id' : class_id, 'liveLectureId': live_lecture_id, 'is_live': True})
         else:
-            class_info.append({'className': each_class, 'liveLectureId': live_lecture_id, 'is_live': False})
+            class_info.append({'className': each_class, 'id' : class_id, 'liveLectureId': live_lecture_id, 'is_live': False})
     return jsonify(results=class_info)
 
 @app.route('/is_student', methods=['GET'])
@@ -50,6 +50,9 @@ def createClass(className):
 
 @app.route('/set_student_classes/<class_name>/<int:student_id>', methods = ['GET', 'POST'])
 def set_student_classes(class_name, student_id):
+    authUser = API.get_authentication()
+    if not authUser:
+        return render_template('authentication/login.html', error='You are not logged in')
     return json.dumps(API.set_student_class(class_name, student_id))
 
 @app.route('/delete/class/<int:class_id>', methods = ['GET', 'POST'])
@@ -58,3 +61,4 @@ def delete_class(class_id):
     if not authUser:
         return render_template('authentication/login.html', error='You are not logged in')
     return jsonify(results=API.delete_class(class_id))
+

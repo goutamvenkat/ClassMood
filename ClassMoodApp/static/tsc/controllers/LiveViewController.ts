@@ -37,7 +37,7 @@ module ClassMoodApp {
 
         private getIsStudent(): void {
             this.$http.get("/is_student").success(
-                (is_student: boolean, status) => {
+                (is_student: any, status) => {
                     this.isStudent = is_student.results;
                     if (!this.isStudent)
                     {

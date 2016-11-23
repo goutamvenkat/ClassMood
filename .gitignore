@@ -95,3 +95,4 @@ ENV/
 *.exe
 .vscode/
 *.db-journal
+debug.sh

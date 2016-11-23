@@ -1,4 +1,5 @@
 /// <reference path="../app.ts" />
+/// <reference path="../../../../typings/bootbox/bootbox.d.ts" />
 var ClassMoodApp;
 (function (ClassMoodApp) {
     "use strict";
@@ -39,7 +40,7 @@ var ClassMoodApp;
             var _this = this;
             bootbox.prompt({
                 title: "Enter Class Name",
-                inputType: 'textarea',
+                value: 'textarea',
                 callback: function (className) {
                     if (className != null) {
                         if (_this.isStudent === true) {
@@ -102,6 +103,11 @@ var ClassMoodApp;
             }
             // At this point just open the lecture page so that students and professor are both viewing the same material (Except for gauges).
             this.$window.location.href = "/live_lecture/get/" + liveLectureId;
+        };
+        ClassListController.prototype.getClassLectures = function (classId) {
+            if (this.isStudent !== true) {
+                this.$window.location.href = "/lectureList/" + classId;
+            }
         };
         ClassListController.$inject = ["$scope", "$http", "$window"];
         return ClassListController;

@@ -1,4 +1,5 @@
 /// <reference path="../app.ts" />
+/// <reference path="../../../../typings/bootbox/bootbox.d.ts" />
 declare var angular: ng.IAngularStatic;
 module ClassMoodApp {
     "use strict";
@@ -21,7 +22,7 @@ module ClassMoodApp {
 
         private getCurrentClasses(): void {
             this.$http.get("/getClassList").success(
-                (data: Array<ClassListModel>, status) => {
+                (data: any, status) => {
                     this.classes = data.results;
                 }
             ).catch((error) => {
@@ -39,7 +40,7 @@ module ClassMoodApp {
 
         private getIsProfessor(): void {
             this.$http.get("/is_student").success(
-                (is_student: boolean, status) => {
+                (is_student: any, status) => {
                     this.isStudent = is_student.results;
                 }
             )
@@ -48,7 +49,7 @@ module ClassMoodApp {
         public addClass(): void {
             bootbox.prompt({
                 title: "Enter Class Name",
-                inputType: 'textarea',
+                value: 'textarea',
                 callback: (className: string) => {
                     if (className != null) {
                         if (this.isStudent === true) {
@@ -118,6 +119,12 @@ module ClassMoodApp {
             }
             // At this point just open the lecture page so that students and professor are both viewing the same material (Except for gauges).
             this.$window.location.href = `/live_lecture/get/${liveLectureId}`;
+        }
+
+        public getClassLectures(classId: number): void {
+            if (this.isStudent !== true) {
+                this.$window.location.href = `/lectureList/${classId}`;
+            }
         }
     }
     app.controller('ClassListController', ClassListController);

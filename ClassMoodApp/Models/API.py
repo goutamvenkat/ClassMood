@@ -257,7 +257,8 @@ class API(object):
         idAndNames = []
         if lectures:
             for l in lectures:
-                idAndNames.append([l.id, l.name])
+                questions = DBModels.PollingQuestion.query.filter_by(lecture_id=l.id).all()
+                idAndNames.append({"lecture_id" : l.id, "lecture_name" : l.name, "num_questions" : len(questions)})
         return idAndNames
 
     # create a polling question
@@ -273,7 +274,7 @@ class API(object):
         questionInformation = []
         if questions:
             for q in questions:
-                questionInformation.append([q.id, q.text, q.answer])
+                questionInformation.append(dict(id=q.id, text=q.text, a_text=q.a_text, b_text=q.b_text, c_text=q.c_text, d_text=q.d_text, answer=q.answer))
         return questionInformation
 
     # delete a single polling question

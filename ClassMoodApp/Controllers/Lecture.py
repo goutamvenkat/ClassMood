@@ -12,6 +12,19 @@ def add_lecture(class_id, lecture_name):
 def join_lecture(live_lecture_id):
     return json.dumps(API.add_student_to_live_lecture(live_lecture_id))
 
+@app.route('/lectureList/<int:class_id>', methods = ['GET', 'POST'])
+def lect_list(class_id):
+    return render_template('lectureList.html', classId=class_id, username=API.get_authentication().first_name)
+
+@app.route('/pollingQuestionList/<int:class_id>/<int:lecture_id>', methods = ['GET', 'POST'])
+def polling_questions_list(class_id, lecture_id):
+    return render_template('pollingQuestionList.html', class_id=class_id, lecture_id=lecture_id, username=API.get_authentication().first_name)
+
+@app.route('/pollingQuestionList/<int:class_id>/<int:lecture_id>/createPollingQuestion', methods = ['GET', 'POST'])
+def get_polling_questions_list(class_id, lecture_id):
+    username=API.get_authentication().first_name
+    return render_template('createPollingQuestion.html', class_id=class_id, lecture_id=lecture_id, username=username)
+
 @app.route('/live_lecture/create/<int:lecture_id>', methods = ['GET', 'POST'])
 def create_live_lecture(lecture_id):
     authUser = API.get_authentication()
@@ -134,3 +147,4 @@ def delete_lecture(lecture_id):
     if not authUser:
         return render_template('authentication/login.html', error='You are not logged in')
     return jsonify(results=API.delete_lecture(lecture_id))
+
