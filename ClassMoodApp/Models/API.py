@@ -3,6 +3,7 @@ import hashlib
 import random
 import datetime
 from flask import session
+from collections import defaultdict
 
 STUDENT = 'STUDENT'
 PROFESSOR = 'PROFESSOR'
@@ -170,6 +171,63 @@ class API(object):
                     return new_live_lecture.id
         return None
 
+    # get current live lecture polling question
+    @staticmethod
+    def get_current_polling_question(live_lecture_id):
+        live_lecture = DBModels.LiveLecture.query.filter_by(id=live_lecture_id).first()
+        if live_lecture:
+            qid = live_lecture.current_polling_qid
+            q = DBModels.PollingQuestion.query.filter_by(id=qid).first()
+            if q:
+                return dict(id=q.id, text=q.text, a_text=q.a_text, b_text=q.b_text, c_text=q.c_text, d_text=q.d_text)
+        return None
+
+    # Returns success based on whether the live lecture's current qid was updated
+    @staticmethod
+    def present_polling_question(live_lecture_id, polling_qid):
+        live_lecture = DBModels.LiveLecture.query.filter_by(id=live_lecture_id).first()
+        if live_lecture:
+            q = DBModels.PollingQuestion.query.filter_by(id=polling_qid).first()
+            if q:
+                live_lecture.current_polling_qid = polling_qid
+                DBModels.db_update(live_lecture)
+                return True
+        return False
+    
+    @staticmethod
+    def respond_to_polling_question(student_id, polling_qid, student_ans):
+        if student_id and polling_qid and student_ans:
+            response = DBModels.PollingQuestionResponse.query.filter_by(student_id=student_id, polling_question_id=polling_qid).first()
+            if response:
+                response.student_answer = student_ans
+                DBModels.db_update(response)
+            else:
+                new_response = DBModels.PollingQuestionResponse(student_id, polling_qid, student_ans)
+                DBModels.db_add(new_response)
+            return True
+        return False
+
+    @staticmethod
+    def stop_polling_questions(live_lecture_id):
+        live_lecture = DBModels.LiveLecture.query.filter_by(id=live_lecture_id).first()
+        if live_lecture:
+            lecture_id = live_lecture.lecture_id
+            polling_qs= DBModels.PollingQuestion.query.filter_by(lecture_id=lecture_id).all()
+            responses_dict = defaultdict(dict)
+            for q in polling_qs:
+                student_responses = DBModels.PollingQuestionResponse.query.filter_by(polling_question_id=q.id).all()
+                correct_answer = DBModels.PollingQuestion.query.filter_by(id=q.id).first().answer
+                q_response_dict = defaultdict(float)
+                for response in student_responses:
+                    q_response_dict[response.student_answer] += (1.0/len(student_responses))*100
+                responses_dict[q.id] = q_response_dict
+                responses_dict[q.id]['correct_answer'] = correct_answer
+                responses_dict[q.id]['num_responses'] = len(student_responses)
+            return responses_dict
+        return None
+                
+
+
     # add a student to the live lecture
     @staticmethod
     def add_student_to_live_lecture(live_lecture_id):
@@ -276,6 +334,8 @@ class API(object):
             for q in questions:
                 questionInformation.append(dict(id=q.id, text=q.text, a_text=q.a_text, b_text=q.b_text, c_text=q.c_text, d_text=q.d_text, answer=q.answer))
         return questionInformation
+
+    
 
     # delete a single polling question
     # this deletes the polling question and reponses

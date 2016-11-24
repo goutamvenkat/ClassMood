@@ -19,9 +19,9 @@
         <!-- <th ng-hide="myCtrl.isStudent">Add Lecture</th> -->
       </tr>
       <tr ng-repeat="class in myCtrl.classes">
-          <td ng-click="myCtrl.getClassLectures(class.id)">//class.className//</td>
-          <td><button class="btn btn-default" ng-click="myCtrl.joinLecture(class.liveLectureId)" ng-disabled="!class.is_live">Join/Rejoin</button></td>
-          <td><button class="btn btn-primary" ng-click="myCtrl.addLecture(class.className)" ng-hide="myCtrl.isStudent" ng-disabled="class.is_live">Add Lecture</button></td>
+          <td><button class="btn btn-info" ng-click="myCtrl.getClassLectures(class.id)" ng-disabled="myCtrl.isStudent">//class.className//</button></td>
+          <td><button class="btn btn-default" ng-click="myCtrl.joinLecture(class.liveLectureId)" ng-disabled="!class.is_live">Join</button></td>
+          <!-- <td><button class="btn btn-primary" ng-click="myCtrl.addLecture(class.className)" ng-hide="myCtrl.isStudent" ng-disabled="class.is_live">Add Lecture</button></td> -->
       </tr>
   </table>
 </div>

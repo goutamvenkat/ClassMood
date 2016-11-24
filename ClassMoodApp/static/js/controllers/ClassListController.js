@@ -1,5 +1,4 @@
 /// <reference path="../app.ts" />
-/// <reference path="../../../../typings/bootbox/bootbox.d.ts" />
 var ClassMoodApp;
 (function (ClassMoodApp) {
     "use strict";
@@ -40,7 +39,7 @@ var ClassMoodApp;
             var _this = this;
             bootbox.prompt({
                 title: "Enter Class Name",
-                value: 'textarea',
+                inputType: 'textarea',
                 callback: function (className) {
                     if (className != null) {
                         if (_this.isStudent === true) {

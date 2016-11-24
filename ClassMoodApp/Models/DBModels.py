@@ -94,11 +94,13 @@ class LiveLecture(db.Model):
     pace_total = Column(Float, nullable=False)
     depth_total = Column(Float, nullable=False)
     num_students = Column(Integer, nullable=False)
-    def __init__(self, lecture_id):
+    current_polling_qid = Column(Integer, ForeignKey('PollingQuestions.id'))
+    def __init__(self, lecture_id, current_polling_qid=None):
         self.lecture_id = lecture_id
         self.pace_total = 0
         self.depth_total = 0
         self.num_students = 0
+        self.current_polling_qid = current_polling_qid
 
 class Gauge(db.Model):
     __tablename__ = 'Gauges'

@@ -1,5 +1,4 @@
 /// <reference path="../app.ts" />
-/// <reference path="../../../../typings/bootbox/bootbox.d.ts" />
 declare var angular: ng.IAngularStatic;
 module ClassMoodApp {
     "use strict";
@@ -49,7 +48,7 @@ module ClassMoodApp {
         public addClass(): void {
             bootbox.prompt({
                 title: "Enter Class Name",
-                value: 'textarea',
+                inputType: 'textarea',
                 callback: (className: string) => {
                     if (className != null) {
                         if (this.isStudent === true) {

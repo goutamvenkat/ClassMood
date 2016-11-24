@@ -1,18 +1,5 @@
 {% extends "baseHomePage.html" %}
-{% block page %}
-<nav class="navbar navbar-inverse navbar-top">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">Class Mood</a>
-        </div>
-        <ul class="nav navbar-nav navbar-right">
-            <li><a href="{{url_for('login')}}"><span class="glyphicon glyphicon-home"></span></a></li>
-            <li><a>Hi {{username}}!</a></li>
-            <li><a href="{{url_for('logout')}}">Logout</a></li>
-        </ul>
-    </div>
-</nav>
-
+{% block newPage %}
 <div id="lectureId" lecture-id="{{lecture_id}}"></div>
 
 <div class="panel panel-default container" ng-controller="LiveViewController as myCtrl">

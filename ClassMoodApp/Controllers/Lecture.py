@@ -113,6 +113,40 @@ def add_anon_question(live_lect_id, text):
         return render_template('authentication/login.html', error='You are not logged in')
     return json.dumps(API.add_anonymous_question(live_lect_id, authUser.id, text))
 
+# student view get the current polling question
+@app.route("/live_lecture/curr_polling_question/get/<int:live_lecture_id>", methods=['GET'])
+def get_curr_polling_question(live_lecture_id):
+    authUser = API.get_authentication()
+    if not authUser:
+        return jsonify(response="Not Authenticated")
+    return json.dumps(API.get_current_polling_question(live_lecture_id))
+
+# professor view. Changes the polling question. Returns success or not
+@app.route('/live_lecture/present_polling_question/get/<int:live_lecture_id>/<int:polling_qid>', methods=['GET'])
+def present_polling_question(live_lecture_id, polling_qid):
+    authUser = API.get_authentication()
+    if not authUser:
+        return jsonify(response="Not Authenticated")
+    return jsonify(success=API.present_polling_question(live_lecture_id, polling_qid))
+
+@app.route('/live_lecture/respond_to_question/post', methods=['POST'])
+def respond_to_polling_question():
+    authUser = API.get_authentication()
+    if not authUser:
+        return jsonify(response="Not Authenticated")
+    student_id = request.form.get('student_id')
+    polling_qid = request.form.get('polling_qid')
+    student_ans = request.form.get('student_ans')
+    return jsonify(success=API.respond_to_polling_question(student_id, polling_qid, student_ans))
+
+@app.route('/live_lecture/stop_polling_questions/<int:live_lecture_id>', methods=['GET'])
+def stop_polling_questions(live_lecture_id):
+    authUser = API.get_authentication()
+    if not authUser:
+        return jsonify(response="Not Authenticated")
+    return json.dumps(API.stop_polling_questions(live_lecture_id))
+
+
 @app.route('/get_lecture_list/<int:class_id>', methods = ['GET', 'POST'])
 def get_lecture_list(class_id):
     authUser = API.get_authentication()
