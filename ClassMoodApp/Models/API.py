@@ -142,6 +142,16 @@ class API(object):
                 return live_lecture.id
         return None
 
+    # returns the lecture associated with a live lecture
+    @staticmethod
+    def get_lecture_from_live_lecture(live_lecture_id):
+        live_lecture = DBModels.LiveLecture.query.filter_by(id=live_lecture_id).first()
+        if live_lecture:
+            lecture = DBModels.Lecture.query.filter_by(id=live_lecture.lecture_id).first()
+            if lecture:
+                return lecture.id
+        return None
+
     # disables the lecture that is live of class_id
     @staticmethod
     def disable_live_lecture(class_id):
@@ -223,6 +233,8 @@ class API(object):
                 responses_dict[q.id] = q_response_dict
                 responses_dict[q.id]['correct_answer'] = correct_answer
                 responses_dict[q.id]['num_responses'] = len(student_responses)
+            live_lecture.current_polling_qid = None
+            DBModels.db_update(live_lecture)
             return responses_dict
         return None
                 

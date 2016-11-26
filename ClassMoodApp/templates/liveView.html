@@ -1,9 +1,9 @@
 {% extends "baseHomePage.html" %}
 {% block newPage %}
-<div id="lectureId" lecture-id="{{lecture_id}}"></div>
 
 <div class="panel panel-default container" ng-controller="LiveViewController as myCtrl">
-    <div class="row">
+    <div ng-init="myCtrl.init({{lecture_id}}, {{live_lecture_id}})"></div>
+    <div class="row live-lecture-top">
         <div class="col-md-4 well">
             <div ng-hide="!myCtrl.isStudent">
                 <h5 class="slider-header">Lecture Pace</h5>
@@ -54,7 +54,31 @@
         </div>
 
         <div class="col-md-8">
-            Questions
+            <div ng-hide="myCtrl.isStudent || myCtrl.pollingQuestions == null || myCtrl.pollingQuestions.length == 0">
+                <h5 class="polling-questions-title">Polling Questions</h5>
+                <hr>
+                <span id="question-text"></span>
+                <div class="polling-question-answer">
+                    <label class="btn" id="a-question-button">A</label> <span id="a-text"></span>
+                </div>
+                <div class="polling-question-answer">
+                    <label class="btn" id="b-question-button">B</label> <span id="b-text"></span>
+                </div>
+                <div class="polling-question-answer">
+                    <label class="btn" id="c-question-button">C</label> <span id="c-text"></span>
+                </div>
+                <div class="polling-question-answer">
+                    <label class="btn" id="d-question-button">D</label> <span id="d-text"></span>
+                </div>
+                <div>
+                    <span id="question-pagination">
+                    </span>
+                    <button type="button" class="btn btn-default" aria-label="Left Align" ng-click="myCtrl.previousPollingQuestion()"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>
+                    <button type="button" class="btn btn-default" aria-label="Left Align" ng-click="myCtrl.nextPollingQuestion()"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button>
+                    <button type="button" class="btn btn-success" ng-click="myCtrl.beginPresentingQuestion()" ng-hide="myCtrl.currentlyPresenting">Present Question</button>
+                    <button type="button" class="btn btn-danger" ng-click="myCtrl.stopPresentingQuestion()" ng-hide="!myCtrl.currentlyPresenting">Stop Presenting</button>
+                </div>
+            </div>
         </div>
     </div>
     <div class="row">

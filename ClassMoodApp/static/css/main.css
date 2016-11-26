@@ -30,6 +30,10 @@
   margin: 0 auto
 }
 
+.live-lecture-top {
+  margin-bottom: 5px;
+}
+
 .slider-header {
   margin-top: 5px;
   margin-bottom: 5px;
@@ -53,4 +57,13 @@
 .slider-table-right {
   width: 33%;
   text-align: right;
+}
+
+.polling-question-answer {
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
+.polling-questions-title {
+  margin-top: 5px;
 }

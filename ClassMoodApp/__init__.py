@@ -86,10 +86,11 @@ if app.config.get('TESTING', False):
         db_add(cs101AnonQuestion, cs102AnonQuestion)
 
         # Create an anonymous question for each lecture
-        cs101LectureAQuestion = PollingQuestion(cs101LectureA.id, "What The correct room for this class?", "Howey L1", "Howey L2", "", "", "A")
+        cs101LectureAQuestion = PollingQuestion(cs101LectureA.id, "What is the correct room for this class?", "Howey L1", "Howey L2", "", "", "A")
+        cs101LectureAQuestion2 = PollingQuestion(cs101LectureA.id, "What is 2+2?", "1", "2", "3", "4", "D")
         cs101LectureBQuestion = PollingQuestion(cs101LectureB.id, "What is the name of this class?", "CS 103", "CS 102", "CS 101", "", "C")
         cs102LectureQuestion = PollingQuestion(cs102Lecture.id, "What The correct room for this class?", "Howey L1", "Howey L2", "", "", "B")
-        db_add(cs101LectureAQuestion, cs101LectureBQuestion, cs102LectureQuestion)
+        db_add(cs101LectureAQuestion, cs101LectureAQuestion2, cs101LectureBQuestion, cs102LectureQuestion)
 
         # Create two responses for cs 101 lecture A question
         cs101LectureAQuestionResponse = PollingQuestionResponse(studentUser.id, cs101LectureAQuestion.id, "A")
