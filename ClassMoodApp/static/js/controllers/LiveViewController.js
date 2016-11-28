@@ -18,6 +18,9 @@ var ClassMoodApp;
             this.questions.questions_string = '';
             this.currentPollingQuestion = 0;
             this.currentlyPresenting = false;
+            this.pollingQuestionStudent = new ClassMoodApp.PollingQuestionStudentModel();
+            this.pollingQuestionStudent.question_id = 0;
+            this.pollingQuestionStudentExist = false;
         }
         LiveViewController.prototype.init = function (lecture_id, live_lecture_id) {
             this.lectureId = lecture_id;
@@ -43,6 +46,7 @@ var ClassMoodApp;
                 }
                 else {
                     _this.getGauge(_this);
+                    _this.pollQuestionsStudent(_this);
                 }
             });
         };
@@ -292,6 +296,52 @@ var ClassMoodApp;
             $('#c-text').text(cTextString);
             $('#d-text').text(dTextString);
             $('#question-pagination').text("Polling Question: " + (this.currentPollingQuestion + 1) + "/" + this.pollingQuestions.length);
+        };
+        LiveViewController.prototype.pollQuestionsStudent = function (self) {
+            this.$http.get("/live_lecture/curr_polling_question/get/" + this.liveLectureId)
+                .success(function (response) {
+                console.log(response);
+                if (response == null || response == 'null') {
+                    // no question
+                    console.log("no question");
+                    self.pollingQuestionStudent.question_id = 0;
+                    self.pollingQuestionStudentExist = false;
+                }
+                else if (response.id != self.pollingQuestionStudent.question_id) {
+                    // new question
+                    console.log("new question");
+                    self.pollingQuestionStudent.question_id = response.id;
+                    self.pollingQuestionStudent.question_text = response.text;
+                    self.pollingQuestionStudent.a_text = response.a_text;
+                    self.pollingQuestionStudent.b_text = response.b_text;
+                    self.pollingQuestionStudent.c_text = response.c_text;
+                    self.pollingQuestionStudent.d_text = response.d_text;
+                    self.pollingQuestionStudentExist = true;
+                }
+                self.$timeout(function () { self.pollQuestionsStudent(self); }, 5000);
+            })
+                .error(function (reponse) {
+            });
+        };
+        LiveViewController.prototype.studentQuestionReponse = function (ans) {
+            var res = '';
+            if (ans == 0) {
+                res = 'A';
+            }
+            else if (ans == 1) {
+                res = 'B';
+            }
+            else if (ans == 2) {
+                res = 'C';
+            }
+            else if (ans == 4) {
+                res = 'D';
+            }
+            this.$http.get("/live_lecture/respond_to_question/" + this.userId + "/" + this.pollingQuestionStudent.question_id + "/" + res)
+                .success(function (response) {
+            })
+                .error(function (response) {
+            });
         };
         LiveViewController.$inject = ["$scope", "$http", "$timeout"];
         return LiveViewController;

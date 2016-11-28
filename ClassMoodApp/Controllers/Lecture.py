@@ -130,14 +130,11 @@ def present_polling_question(live_lecture_id, polling_qid):
         return jsonify(response="Not Authenticated")
     return jsonify(success=API.present_polling_question(live_lecture_id, polling_qid))
 
-@app.route('/live_lecture/respond_to_question/post', methods=['POST'])
-def respond_to_polling_question():
+@app.route('/live_lecture/respond_to_question/<int:student_id>/<int:polling_qid>/<string:student_ans>', methods=['GET', 'POST'])
+def respond_to_polling_question(student_id, polling_qid, student_ans):
     authUser = API.get_authentication()
     if not authUser:
         return jsonify(response="Not Authenticated")
-    student_id = request.form.get('student_id')
-    polling_qid = request.form.get('polling_qid')
-    student_ans = request.form.get('student_ans')
     return jsonify(success=API.respond_to_polling_question(student_id, polling_qid, student_ans))
 
 @app.route('/live_lecture/stop_polling_questions/<int:live_lecture_id>', methods=['GET'])

@@ -82,6 +82,17 @@
                     <button type="button" class="btn btn-danger" ng-click="myCtrl.stopPresentingQuestion()" ng-hide="!myCtrl.currentlyPresenting">Stop Presenting</button>
                 </div>
             </div>
+            <div ng-show="myCtrl.isStudent && myCtrl.pollingQuestionStudentExist">
+                <h5 class="polling-questions-title">Polling Question</h5>
+                <hr>
+                <span> //myCtrl.pollingQuestionStudent.question_text// </span>
+                <form>
+                    <input type="radio" name="question_text" value="A" ng-click="myCtrl.studentQuestionReponse(0)">//myCtrl.pollingQuestionStudent.a_text//<br>
+                    <input type="radio" name="question_text" value="B" ng-click="myCtrl.studentQuestionReponse(1)">//myCtrl.pollingQuestionStudent.b_text//<br>
+                    <input type="radio" name="question_text" value="C" ng-click="myCtrl.studentQuestionReponse(2)">//myCtrl.pollingQuestionStudent.c_text//<br>
+                    <input type="radio" name="question_text" value="D" ng-click="myCtrl.studentQuestionReponse(3)">//myCtrl.pollingQuestionStudent.d_text//
+                </form>
+            </div>
         </div>
     </div>
     <div class="row">
