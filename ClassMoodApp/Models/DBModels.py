@@ -83,9 +83,11 @@ class Lecture(db.Model):
     id = Column(Integer, primary_key=True)
     name = Column(String(40), nullable=False)
     class_id = Column(Integer, ForeignKey('Classes.id'))
+    creation_time = Column(DateTime())
     def __init__(self, name, class_id):
         self.name = name
         self.class_id = class_id
+        self.creation_time = datetime.now()
 
 class LiveLecture(db.Model):
     __tablename__ = 'LiveLectures'

@@ -120,6 +120,31 @@ module ClassMoodApp {
             this.$window.location.href = `/live_lecture/get/${liveLectureId}`;
         }
 
+        public deleteClass(classId: number) {
+            console.log("hi")
+            if (this.isStudent) {
+                this.$http.get(`/delete/class_student/${this.userId}/${classId}`).success(
+                    (data: any, status) => {
+                        if (data.results === true) {
+                            this.getCurrentClasses();
+                        }
+                    }
+                ).catch((error) => {
+                    console.log(error);
+                });
+            } else {
+                this.$http.get(`/delete/class/${classId}`).success(
+                    (data: any, status) => {
+                        if (data.results === true) {
+                            this.getCurrentClasses();
+                        }
+                    }
+                ).catch((error) => {
+                    console.log(error);
+                });
+            }
+        }
+
         public getClassLectures(classId: number): void {
             if (this.isStudent !== true) {
                 this.$window.location.href = `/lectureList/${classId}`;

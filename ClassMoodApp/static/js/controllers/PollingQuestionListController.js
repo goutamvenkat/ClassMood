@@ -35,6 +35,18 @@ var ClassMoodApp;
                 this.$window.location.href = "/pollingQuestionList/" + this.classId + "/" + this.lecture_id + "/createPollingQuestion";
             }
         };
+        PollingQuestionListController.prototype.deletePollingQuestion = function (id) {
+            var _this = this;
+            if (!this.isStudent) {
+                this.$http.get("/delete/polling_question/" + id).success(function (data, status) {
+                    if (data.results === true) {
+                        _this.getPollingQuestions();
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }
+        };
         PollingQuestionListController.$inject = ["$scope", "$http", "$window"];
         return PollingQuestionListController;
     }());

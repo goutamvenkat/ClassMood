@@ -2,6 +2,7 @@
 {% block newPage %}
 
 <div class="panel panel-default container" ng-controller="LiveViewController as myCtrl">
+    <!-- <div class="row" style="position: relative"> -->
     <div ng-init="myCtrl.init({{lecture_id}}, {{live_lecture_id}})"></div>
     <div class="row live-lecture-top">
         <div class="col-md-4 well">
@@ -51,8 +52,10 @@
                 </table>
                 <input id="depthSlider" class="mdl-slider mdl-js-slider" type="range" min="-1" max="1" step="0.01" value="// myCtrl.gauge.depth_num //" disabled>
             </div>
+            <div align="center" style="padding-top:1em">
+                <button class="btn btn-default" ng-click="myCtrl.resetGauges()" ng-hide="myCtrl.isStudent" ng-model="myCtrl.reset">Reset Gauges</button>
+            </div>
         </div>
-
         <div class="col-md-8">
             <div ng-hide="myCtrl.isStudent || myCtrl.pollingQuestions == null || myCtrl.pollingQuestions.length == 0">
                 <h5 class="polling-questions-title">Polling Questions</h5>
@@ -86,7 +89,6 @@
             <textarea id="questionsArea" rows="6" cols="80" readonly>
                 //myCtrl.questions.questions_string//
             </textarea>
-
             <div ng-show="myCtrl.isStudent">
                 <form>
                     Enter a question:
@@ -94,7 +96,7 @@
                     <button ng-click="myCtrl.submitPressed()">Submit</button>
                 </form>
             </div>
-        </center>
+        </div>
     </div>
 </div>
 {% endblock %}

@@ -108,12 +108,25 @@ module ClassMoodApp {
         }
 
         public getPollingQuestions(lecture_id: number): void {
-            console.log("hi");
             if (this.isStudent !== true) {
                 this.$window.location.href = `/pollingQuestionList/${this.classId}/${lecture_id}`;
             }
         }
 
+        public deleteLecture(lecture_id: number): void {
+            if (!this.isStudent) {
+                this.$http.get(`/delete/lecture/${lecture_id}`).success(
+                    (data: any, status) => {
+                        if (data.results === true) {
+                            this.getCurrentlectures();
+                        }
+                    }
+                ).catch((error) => {
+                    console.log(error);
+                });
+            }
+        }
     }
+
     app.controller('LectureListController', LectureListController);
 }

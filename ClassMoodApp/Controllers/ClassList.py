@@ -62,3 +62,9 @@ def delete_class(class_id):
         return render_template('authentication/login.html', error='You are not logged in')
     return jsonify(results=API.delete_class(class_id))
 
+@app.route('/delete/class_student/<int:student_id>/<int:class_id>', methods = ['GET', 'POST'])
+def delete_class_student(student_id, class_id):
+    authUser = API.get_authentication()
+    if not authUser:
+        return render_template('authentication/login.html', error='You are not logged in')
+    return jsonify(results=API.delete_class_student(student_id, class_id))

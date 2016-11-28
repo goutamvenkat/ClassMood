@@ -143,6 +143,19 @@ var ClassMoodApp;
                 });
             }
         };
+        LiveViewController.prototype.resetGauges = function () {
+            var _this = this;
+            if (!this.isStudent) {
+                this.$http.get("/reset_gauges/" + this.lectureId).success(function (data, status) {
+                    if (data.results === true) {
+                        _this.gaugePollPace(_this);
+                        _this.gaugePollDepth(_this);
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }
+        };
         LiveViewController.prototype.getPollingQuestions = function () {
             var self = this;
             this.$http.get("/get_polling_questions/" + this.lectureId)

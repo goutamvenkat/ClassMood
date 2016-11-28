@@ -15,12 +15,16 @@
       <tr>
         <th>Lecture Title</th>
         <th>Number of Questions</th>
-        <th ng-hide="lCtrl.isStudent">Add Lecture</th>
+        <th>Creation Time</th>
       </tr>
       <tr ng-repeat="lecture in lCtrl.lectures">
           <td ng-click="lCtrl.getPollingQuestions(lecture.lecture_id)">//lecture.lecture_name//</td>
           <td>//lecture.num_questions//</td>
+          <td>//lecture.creation_time//</td>
           <td><button class="btn btn-primary" ng-click="lCtrl.goLive(lecture.lecture_id)">Go Live!</button></td>
+          <div class="hover-btn" style="display: none">
+            <td><button type="button" class="close" ng-click="lCtrl.deleteLecture(lecture.lecture_id)"><span>×</span></button></td>
+          </div>
       </tr>
   </table>
 </div>

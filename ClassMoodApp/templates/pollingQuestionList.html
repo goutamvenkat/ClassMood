@@ -1,10 +1,10 @@
 {% extends "baseHomePage.html" %}
 {% block newPage %}
-<div class="panel panel-default" ng-controller="PollingQuestionListController as crtl">
+<div class="panel panel-default" ng-controller="PollingQuestionListController as ctrl">
   <div class="panel-heading clearfix">
       <span style="margin-top:40px"> <b>Polling Questions</b></span>
-      <button type="button" class="btn btn-primary pull-right" ng-click="crtl.loadAddPollingQuestionsPage()" style="margin-left:20px">Create Question</button>
-      <button type="button" class="btn btn-primary pull-right" ng-click="crtl.goLive()">Go Live!</button>
+      <button type="button" class="btn btn-primary pull-right" ng-click="ctrl.loadAddPollingQuestionsPage()" style="margin-left:20px">Create Question</button>
+      <button type="button" class="btn btn-primary pull-right" ng-click="ctrl.goLive()">Go Live!</button>
   </div>
   <div class="panel-body">
   </div>
@@ -18,13 +18,16 @@
         <th>Choice D</th>
         <th>Answer</th>
       </tr>
-      <tr ng-repeat="question in crtl.questions">
+      <tr ng-repeat="question in ctrl.questions">
           <td>//question.text//</td>
           <td>//question.a_text//</td>
           <td>//question.b_text//</td>
           <td>//question.c_text//</td>
           <td>//question.d_text//</td>
           <td>//question.answer//</td>
+          <div class="hover-btn" style="display: none">
+            <td><button type="button" class="close" ng-click="ctrl.deletePollingQuestion(question.id)"><span>×</span></button></td>
+          </div>
       </tr>
   </table>
 </div>

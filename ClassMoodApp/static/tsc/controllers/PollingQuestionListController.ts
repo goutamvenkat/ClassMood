@@ -45,6 +45,20 @@ module ClassMoodApp {
                 this.$window.location.href = `/pollingQuestionList/${this.classId}/${this.lecture_id}/createPollingQuestion`;
             }
         }
+
+        public deletePollingQuestion(id: number): void {
+            if (!this.isStudent) {
+                this.$http.get(`/delete/polling_question/${id}`).success(
+                    (data: any, status) => {
+                        if (data.results === true) {
+                            this.getPollingQuestions();
+                        }
+                    }
+                ).catch((error) => {
+                    console.log(error);
+                });
+            }
+        }
     }
 
     app.controller('PollingQuestionListController', PollingQuestionListController);

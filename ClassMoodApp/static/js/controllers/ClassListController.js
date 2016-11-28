@@ -103,6 +103,28 @@ var ClassMoodApp;
             // At this point just open the lecture page so that students and professor are both viewing the same material (Except for gauges).
             this.$window.location.href = "/live_lecture/get/" + liveLectureId;
         };
+        ClassListController.prototype.deleteClass = function (classId) {
+            var _this = this;
+            console.log("hi");
+            if (this.isStudent) {
+                this.$http.get("/delete/class_student/" + this.userId + "/" + classId).success(function (data, status) {
+                    if (data.results === true) {
+                        _this.getCurrentClasses();
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }
+            else {
+                this.$http.get("/delete/class/" + classId).success(function (data, status) {
+                    if (data.results === true) {
+                        _this.getCurrentClasses();
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }
+        };
         ClassListController.prototype.getClassLectures = function (classId) {
             if (this.isStudent !== true) {
                 this.$window.location.href = "/lectureList/" + classId;

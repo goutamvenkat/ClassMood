@@ -177,6 +177,21 @@ module ClassMoodApp {
 			}
 		}
 
+        public resetGauges(): void {
+            if (!this.isStudent) {
+                this.$http.get(`/reset_gauges/${this.lectureId}`).success(
+                    (data: any, status) => {
+                        if (data.results === true) {
+                            this.gaugePollPace(this);
+                            this.gaugePollDepth(this);
+                        }
+                    }
+                ).catch((error) => {
+                    console.log(error);
+                });
+            }
+        }
+
         private getPollingQuestions(): void {
             var self = this;
             this.$http.get(`/get_polling_questions/${this.lectureId}`)

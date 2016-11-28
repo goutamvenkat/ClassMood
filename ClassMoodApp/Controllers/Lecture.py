@@ -183,3 +183,9 @@ def delete_lecture(lecture_id):
         return render_template('authentication/login.html', error='You are not logged in')
     return jsonify(results=API.delete_lecture(lecture_id))
 
+@app.route('/reset_gauges/<int:live_lecture_id>', methods = ['GET', 'POST'])
+def reset_gauges(live_lecture_id):
+    authUser = API.get_authentication()
+    if not authUser:
+        return render_template('authentication/login.html', error='You are not logged in')
+    return jsonify(results=API.reset_gauges(live_lecture_id))

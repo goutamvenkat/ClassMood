@@ -86,9 +86,20 @@ var ClassMoodApp;
             this.$window.location.href = "/live_lecture/get/" + this.classId;
         };
         LectureListController.prototype.getPollingQuestions = function (lecture_id) {
-            console.log("hi");
             if (this.isStudent !== true) {
                 this.$window.location.href = "/pollingQuestionList/" + this.classId + "/" + lecture_id;
+            }
+        };
+        LectureListController.prototype.deleteLecture = function (lecture_id) {
+            var _this = this;
+            if (!this.isStudent) {
+                this.$http.get("/delete/lecture/" + lecture_id).success(function (data, status) {
+                    if (data.results === true) {
+                        _this.getCurrentlectures();
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                });
             }
         };
         LectureListController.$inject = ["$scope", "$http", "$window", "$routeParams"];

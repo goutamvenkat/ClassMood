@@ -18,9 +18,9 @@ if app.config.get('TESTING', False):
         db.create_all()
 
         # Create the users
-        studentUser = User("Test", "Student", "student@gatech.edu", True)
+        studentUser = User("Student", "Student", "student@gatech.edu", True)
         otherStudentUser = User("Other", "Student", "other_student@gatech.edu", True)
-        professorUser = User("Test", "Professor", "professor@gatech.edu", False)
+        professorUser = User("Professor", "Professor", "professor@gatech.edu", False)
         db_add(studentUser, otherStudentUser, professorUser)
 
         # Create the authentication for each user

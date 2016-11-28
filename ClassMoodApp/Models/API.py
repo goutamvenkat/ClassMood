@@ -4,6 +4,7 @@ import random
 import datetime
 from flask import session
 from collections import defaultdict
+from sqlalchemy import desc
 
 STUDENT = 'STUDENT'
 PROFESSOR = 'PROFESSOR'
@@ -323,13 +324,13 @@ class API(object):
     # list all the lectures in a class
     @staticmethod
     def get_lecture_list(class_id):
-        lectures = DBModels.Lecture.query.filter_by(class_id=class_id).all()
-        idAndNames = []
+        lectures = DBModels.Lecture.query.filter_by(class_id=class_id).order_by(desc(DBModels.Lecture.creation_time)).all()
+        ret = []
         if lectures:
             for l in lectures:
                 questions = DBModels.PollingQuestion.query.filter_by(lecture_id=l.id).all()
-                idAndNames.append({"lecture_id" : l.id, "lecture_name" : l.name, "num_questions" : len(questions)})
-        return idAndNames
+                ret.append({"lecture_id" : l.id, "lecture_name" : l.name, "num_questions" : len(questions), "creation_time" : l.creation_time})
+        return ret
 
     # create a polling question
     @staticmethod
@@ -400,7 +401,42 @@ class API(object):
         if class_members:
             for cm in class_members:
                 DBModels.db_rem(cm)
-        classToDelete = DBModels.Class.query.filter_by(id=class_id)
+        classToDelete = DBModels.Class.query.filter_by(id=class_id).first()
         if classToDelete:
             DBModels.db_rem(classToDelete)
+        return True
+
+    # Removes student from a class and deletes all of the student's polling question responses
+    @staticmethod
+    def delete_class_student(student_id, class_id):
+        entry = DBModels.ClassMember.query.filter_by(student_id=student_id, class_id=class_id).first()
+        DBModels.db_rem(entry)
+        lectures = DBModels.Lecture.query.filter_by(class_id=class_id).with_entities(DBModels.Lecture.id).all()
+        lecture_ids = []
+        for lecture in lectures:
+            lecture_ids.append(lecture.id)
+
+        polling_questions = DBModels.PollingQuestion.query.filter(DBModels.PollingQuestion.lecture_id.in_(lecture_ids)).all()
+        polling_question_ids = []
+        for q in polling_questions:
+            polling_question_ids.append(q.id)
+        polling_question_responses = DBModels.PollingQuestionResponse.query.filter( \
+                DBModels.PollingQuestionResponse.polling_question_id.in_(polling_question_ids), \
+                DBModels.PollingQuestionResponse.student_id==student_id).all()
+        for resp in polling_question_responses:
+            DBModels.db_rem(resp)
+        return True
+
+    # Removes student from a class and deletes all of the student's polling question responses
+    @staticmethod
+    def reset_gauges(live_lecture_id):
+        liveLecture = DBModels.LiveLecture.query.filter_by(id=live_lecture_id).first()
+        liveLecture.pace_total = 0
+        liveLecture.depth_total= 0
+        DBModels.db_update(liveLecture)
+        gauges = DBModels.Gauge.query.filter_by(live_lecture_id=live_lecture_id)
+        for gauge in gauges:
+            gauge.depth = 0
+            gauge.pace = 0
+            DBModels.db_update(gauge)
         return True
