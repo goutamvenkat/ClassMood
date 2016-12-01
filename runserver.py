@@ -1,4 +1,4 @@
 #!/usr/bin/python
 from ClassMoodApp import app
 
-app.run()
+app.run(threaded=True)
