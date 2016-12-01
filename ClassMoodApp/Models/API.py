@@ -2,7 +2,7 @@ from . import DBModels
 import hashlib
 import random
 import datetime
-from flask import session
+from flask import session, request
 from collections import defaultdict
 from sqlalchemy import desc
 
@@ -79,13 +79,15 @@ class API(object):
         return None
 
     @staticmethod
-    def get_authentication():
-        if "token" in session:
-            session_token = session["token"]
-            sesh = DBModels.Session.query.filter_by(token=session_token).first()
-            if sesh and abs(sesh.expires_at - datetime.datetime.now()) > datetime.timedelta(seconds=0):
-                user = DBModels.User.query.filter_by(id=sesh.user_id).first()
-                return user
+    def get_authentication(session_token=None):
+        # if "token" in session:
+        #     session_token = session["token"]
+        if not session_token:
+            session_token = request.cookies.get('token')
+        sesh = DBModels.Session.query.filter_by(token=session_token).first()
+        if sesh and abs(sesh.expires_at - datetime.datetime.now()) > datetime.timedelta(seconds=0):
+            user = DBModels.User.query.filter_by(id=sesh.user_id).first()
+            return user
         return None
 
     @staticmethod

@@ -1,5 +1,5 @@
 from ClassMoodApp import app
-from flask import render_template, request, session, jsonify, redirect
+from flask import render_template, request, session, jsonify, redirect, make_response
 from ClassMoodApp.Models.API import API
 
 login_page = 'authentication/login.html'
@@ -25,18 +25,20 @@ def loginUser(email=None, name=None):
         session_token = API.create_session(user.id)
         if not session_token:
             return render_template(login_page, error='Failed to create token')
-        session["token"] = session_token
-        return render_template(main_page, username=API.get_authentication().first_name, user_id=API.get_authentication().id)
+        resp = make_response(render_template(main_page, 
+                                            username=API.get_authentication(session_token).first_name,
+                                            user_id=API.get_authentication(session_token).id))
+        resp.set_cookie('token', str(session_token))
+        return resp
     return render_template(login_page, error='Invalid email or password')
 
 @app.route('/logoutUser', methods=['GET', 'POST'])
 def logout():
-    user = API.get_authentication()
-    token = session["token"]
-    API.delete_session(token)
-    session.pop("token", None)
-    # return redirect(url_for('login'))
-    return render_template(login_page, message='You have been logged out')
+    session_token = request.cookies.get('token')
+    API.delete_session(session_token)
+    resp = make_response(render_template(login_page, message='You have been logged out'))
+    resp.set_cookie('token', '')
+    return resp
 
 @app.route('/user_id', methods=['GET'])
 def user_id():
