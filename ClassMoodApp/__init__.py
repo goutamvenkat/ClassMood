@@ -18,85 +18,85 @@ if app.config.get('TESTING', False):
         db.create_all()
 
         # Create the users
-        studentUser = User("Student", "Student", "student@gatech.edu", True)
-        otherStudentUser = User("Other", "Student", "other_student@gatech.edu", True)
-        professorUser = User("Professor", "Professor", "professor@gatech.edu", False)
-        db_add(studentUser, otherStudentUser, professorUser)
+        studentUser1 = User("Neil", "Vohra", "neilvohra@gatech.edu", True)
+        studentUser2 = User("Goutam", "Venkat", "goutamvenkat@gatech.edu", True)
+        professorUser = User("Kevin", "Han", "professor@gatech.edu", False)
+        db_add(studentUser1, studentUser2, professorUser)
 
         # Create the authentication for each user
-        studentAuth = Authentication(studentUser.id, "password")
-        otherStudentAuth = Authentication(otherStudentUser.id, "password")
+        student1Auth = Authentication(studentUser1.id, "password")
+        student2Auth = Authentication(studentUser2.id, "password")
         professorAuth = Authentication(professorUser.id, "password")
-        db_add(studentAuth, otherStudentAuth, professorAuth)
+        db_add(student1Auth, student2Auth, professorAuth)
 
         # Create the classes for the test professor
-        cs101 = Class('CS 101', 'CS 101 with Test Professor', professorUser.id)
-        cs102 = Class('CS 102', 'CS 102 with Test Professor', professorUser.id)
-        cs103 = Class('CS 103', 'CS 103 with Test Professor', professorUser.id)
-        cs201 = Class('CS 201', 'CS 201 with Test Professor', professorUser.id)
-        db_add(cs101, cs102, cs103, cs201)
+        cs1332 = Class('CS 1332', 'CS 2200 with Kevin Han', professorUser.id)
+        cs4001 = Class('CS 4001', 'CS 4001 with Kevin Han', professorUser.id)
+        # cs2200 = Class('CS 2200', 'CS 2200 with Test Professor', professorUser.id)
+        cs4140 = Class('CS 4140/6140', 'CS 4140/6140 with Kevin han', professorUser.id)
+        db_add(cs1332, cs4001, cs4140)
 
-        # Add the test student to CS 101 and CS 102 using the class members table
-        cs101Member = ClassMember(studentUser.id, cs101.id)
-        cs101MemberOther = ClassMember(otherStudentUser.id, cs101.id)
-        cs102Member = ClassMember(studentUser.id, cs102.id)
-        db_add(cs101Member, cs101MemberOther, cs102Member)
+        # # Add the test student to CS 1332 and CS 220 using the class members table
+        # cs1332Member = ClassMember(studentUser1.id, cs1332.id)
+        # cs1332MemberOther = ClassMember(otherStudentUser.id, cs1332.id)
+        # cs2200Member = ClassMember(studentUser.id, cs2200.id)
+        # db_add(cs1332Member, cs1332MemberOther, cs2200Member)
 
-        # Create two lectures for cs101 and a lecture for cs102
-        cs101LectureA = Lecture('Lecture A', cs101.id)
-        cs101LectureB = Lecture('Lecture B', cs101.id)
-        cs102Lecture = Lecture('Lecture', cs102.id)
-        db_add(cs101LectureA, cs101LectureB, cs102Lecture)
+        # # Create two lectures for cs1332 and a lecture for cs2200
+        # cs1332LectureA = Lecture('Lecture A', cs1332.id)
+        # cs1332LectureB = Lecture('Lecture B', cs1332.id)
+        # cs2200Lecture = Lecture('Lecture', cs2200.id)
+        # db_add(cs1332LectureA, cs1332LectureB, cs2200Lecture)
 
-        # Create a live lecture for cs101 from Lecture A and a live lecture for cs102 from Lecture
-        cs101LiveLecture = LiveLecture(cs101LectureA.id)
-        cs102LiveLecture = LiveLecture(cs102Lecture.id)
-        # Update lecture properties for CS 101 and CS 102
-        cs101LiveLecture.pace_total = -2
-        cs101LiveLecture.depth_total = 1
-        cs101LiveLecture.num_students = 2
-        cs102LiveLecture.pace_total = -1
-        cs102LiveLecture.depth_total = -1
-        cs102LiveLecture.num_students = 1
-        db_add(cs101LiveLecture, cs102LiveLecture)
+        # # Create a live lecture for cs1332 from Lecture A and a live lecture for cs2200 from Lecture
+        # cs1332LiveLecture = LiveLecture(cs1332LectureA.id)
+        # cs2200LiveLecture = LiveLecture(cs2200Lecture.id)
+        # # Update lecture properties for CS 101 and CS 102
+        # cs1332LiveLecture.pace_total = -2
+        # cs1332LiveLecture.depth_total = 1
+        # cs1332LiveLecture.num_students = 2
+        # cs2200LiveLecture.pace_total = -1
+        # cs2200LiveLecture.depth_total = -1
+        # cs2200LiveLecture.num_students = 1
+        # db_add(cs1332LiveLecture, cs2200LiveLecture)
 
-        # Create two gauges for students in CS 101
-        cs101Gauge = Gauge(cs101LiveLecture.id, studentUser.id)
-        cs101Gauge.pace = -1
-        cs101Gauge.depth = 1
-        cs101GaugeOther = Gauge(cs101LiveLecture.id, otherStudentUser.id)
-        cs101GaugeOther.pace = -1
-        cs101GaugeOther.depth = 0
-        # Create gauge for a student in CS 102
-        cs102Gauge = Gauge(cs102LiveLecture.id, studentUser.id)
-        cs102Gauge.pace = -1
-        cs102Gauge.depth = -1
-        db_add(cs101Gauge, cs101GaugeOther, cs102Gauge)
+        # # Create two gauges for students in CS 101
+        # cs1332Gauge = Gauge(cs1332LiveLecture.id, studentUser.id)
+        # cs1332Gauge.pace = -1
+        # cs1332Gauge.depth = 1
+        # cs1332GaugeOther = Gauge(cs1332LiveLecture.id, otherStudentUser.id)
+        # cs1332GaugeOther.pace = -1
+        # cs1332GaugeOther.depth = 0
+        # # Create gauge for a student in CS 102
+        # cs2200Gauge = Gauge(cs2200LiveLecture.id, studentUser.id)
+        # cs2200Gauge.pace = -1
+        # cs2200Gauge.depth = -1
+        # db_add(cs1332Gauge, cs1332GaugeOther, cs2200Gauge)
 
-        # Update the cs101 and cs102 classes to point to the current live lectures
-        cs101.live_lecture_id = cs101LiveLecture.id
-        cs102.live_lecture_id = cs102LiveLecture.id
-        db_update(cs101, cs102)
+        # # Update the cs1332 and cs2200 classes to point to the current live lectures
+        # cs1332.live_lecture_id = cs1332LiveLecture.id
+        # cs2200.live_lecture_id = cs2200LiveLecture.id
+        # db_update(cs1332, cs2200)
 
-        # Create anonymous question on behalf of student for both classes
-        q1 = "Is Howey L1 the correct room for CS 101?"
-        cs101AnonQuestion = AnonymousQuestion(cs101LiveLecture.id, q1, studentUser.id)
-        q2 = "Is Howey L2 the correct room for CS 102?"
-        cs102AnonQuestion = AnonymousQuestion(cs102LiveLecture.id, q2, otherStudentUser.id)
-        db_add(cs101AnonQuestion, cs102AnonQuestion)
+        # # Create anonymous question on behalf of student for both classes
+        # q1 = "Is Howey L1 the correct room for CS 101?"
+        # cs1332AnonQuestion = AnonymousQuestion(cs1332LiveLecture.id, q1, studentUser.id)
+        # q2 = "Is Howey L2 the correct room for CS 102?"
+        # cs2200AnonQuestion = AnonymousQuestion(cs2200LiveLecture.id, q2, otherStudentUser.id)
+        # db_add(cs1332AnonQuestion, cs2200AnonQuestion)
 
-        # Create an anonymous question for each lecture
-        cs101LectureAQuestion = PollingQuestion(cs101LectureA.id, "What is the correct room for this class?", "Howey L1", "Howey L2", "", "", "A")
-        cs101LectureAQuestion2 = PollingQuestion(cs101LectureA.id, "What is 2+2?", "1", "2", "3", "4", "D")
-        cs101LectureBQuestion = PollingQuestion(cs101LectureB.id, "What is the name of this class?", "CS 103", "CS 102", "CS 101", "", "C")
-        cs102LectureQuestion = PollingQuestion(cs102Lecture.id, "What The correct room for this class?", "Howey L1", "Howey L2", "", "", "B")
-        db_add(cs101LectureAQuestion, cs101LectureAQuestion2, cs101LectureBQuestion, cs102LectureQuestion)
+        # # Create an anonymous question for each lecture
+        # cs1332LectureAQuestion = PollingQuestion(cs1332LectureA.id, "What is the correct room for this class?", "Howey L1", "Howey L2", "", "", "A")
+        # cs1332LectureAQuestion2 = PollingQuestion(cs1332LectureA.id, "What is 2+2?", "1", "2", "3", "4", "D")
+        # cs1332LectureBQuestion = PollingQuestion(cs1332LectureB.id, "What is the name of this class?", "CS 103", "CS 102", "CS 101", "", "C")
+        # cs2200LectureQuestion = PollingQuestion(cs2200Lecture.id, "What The correct room for this class?", "Howey L1", "Howey L2", "", "", "B")
+        # db_add(cs1332LectureAQuestion, cs1332LectureAQuestion2, cs1332LectureBQuestion, cs2200LectureQuestion)
 
-        # Create two responses for cs 101 lecture A question
-        cs101LectureAQuestionResponse = PollingQuestionResponse(studentUser.id, cs101LectureAQuestion.id, "A")
-        cs101LectureAQuestionResponseOther = PollingQuestionResponse(otherStudentUser.id, cs101LectureAQuestion.id, "C")
-        # Create a response for cs 102 lecture question
-        cs102LectureQuestionResponse = PollingQuestionResponse(studentUser.id, cs102LectureQuestion.id, "B")
-        db_add(cs101LectureAQuestionResponse, cs101LectureAQuestionResponseOther, cs102LectureQuestionResponse)
+        # # Create two responses for cs 101 lecture A question
+        # cs1332LectureAQuestionResponse = PollingQuestionResponse(studentUser.id, cs1332LectureAQuestion.id, "A")
+        # cs1332LectureAQuestionResponseOther = PollingQuestionResponse(otherStudentUser.id, cs1332LectureAQuestion.id, "C")
+        # # Create a response for cs 102 lecture question
+        # cs2200LectureQuestionResponse = PollingQuestionResponse(studentUser.id, cs2200LectureQuestion.id, "B")
+        # db_add(cs1332LectureAQuestionResponse, cs1332LectureAQuestionResponseOther, cs2200LectureQuestionResponse)
 
 from ClassMoodApp.Controllers import *
