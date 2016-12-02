@@ -3,16 +3,19 @@ var ClassMoodApp;
 (function (ClassMoodApp) {
     "use strict";
     var LiveViewController = (function () {
-        function LiveViewController($scope, $http, $timeout) {
+        function LiveViewController($scope, $http, $timeout, $window) {
             this.$scope = $scope;
             this.$http = $http;
             this.$timeout = $timeout;
+            this.$window = $window;
             this.$http = $http;
             this.$scope = $scope;
+            this.$window = $window;
             this.gauge = new ClassMoodApp.GaugeModel();
             this.gauge.depth_num = 0;
             this.gauge.pace_num = 0;
             this.questionEntered = '';
+            this.studentResponse = 'A';
             this.questions = new ClassMoodApp.AnonymousQuestionsModel();
             this.questions.questions_array = [];
             this.questions.questions_string = '';
@@ -22,7 +25,8 @@ var ClassMoodApp;
             this.pollingQuestionStudent.question_id = 0;
             this.pollingQuestionStudentExist = false;
         }
-        LiveViewController.prototype.init = function (lecture_id, live_lecture_id) {
+        LiveViewController.prototype.init = function (class_id, lecture_id, live_lecture_id) {
+            this.classId = class_id;
             this.lectureId = lecture_id;
             this.liveLectureId = live_lecture_id;
             this.getIsStudent();
@@ -47,6 +51,7 @@ var ClassMoodApp;
                 else {
                     _this.getGauge(_this);
                     _this.pollQuestionsStudent(_this);
+                    _this.pollCurrentLiveLecture(_this);
                 }
             });
         };
@@ -134,6 +139,22 @@ var ClassMoodApp;
                 self.$timeout(function () { self.pollAnonymousQuestions(self); }, 10000);
             });
         };
+        LiveViewController.prototype.pollCurrentLiveLecture = function (self) {
+            this.$http.get("/live_lecture/get_id/" + this.classId)
+                .success(function (response) {
+                if (response.live_lecture_id != self.liveLectureId) {
+                    console.log("Live lecture changed or ended...");
+                    self.$window.location.href = '/';
+                }
+                else {
+                    console.log("Live lecture matches current");
+                    self.$timeout(function () { self.pollCurrentLiveLecture(self); }, 15000);
+                }
+            })
+                .error(function (response) {
+                self.$timeout(function () { self.pollCurrentLiveLecture(self); }, 60000);
+            });
+        };
         LiveViewController.prototype.submitPressed = function () {
             this.submitAnonymousQuestion(this);
         };
@@ -150,7 +171,7 @@ var ClassMoodApp;
         LiveViewController.prototype.resetGauges = function () {
             var _this = this;
             if (!this.isStudent) {
-                this.$http.get("/reset_gauges/" + this.lectureId).success(function (data, status) {
+                this.$http.get("/reset_gauges/" + this.liveLectureId).success(function (data, status) {
                     if (data.results === true) {
                         _this.gaugePollPace(_this);
                         _this.gaugePollDepth(_this);
@@ -323,27 +344,33 @@ var ClassMoodApp;
                 .error(function (reponse) {
             });
         };
-        LiveViewController.prototype.studentQuestionReponse = function (ans) {
-            var res = '';
-            if (ans == 0) {
-                res = 'A';
-            }
-            else if (ans == 1) {
-                res = 'B';
-            }
-            else if (ans == 2) {
-                res = 'C';
-            }
-            else if (ans == 4) {
-                res = 'D';
-            }
-            this.$http.get("/live_lecture/respond_to_question/" + this.userId + "/" + this.pollingQuestionStudent.question_id + "/" + res)
+        LiveViewController.prototype.setStudentResponse = function (resp) {
+            this.studentResponse = resp;
+        };
+        LiveViewController.prototype.studentQuestionReponse = function () {
+            this.$http.get("/live_lecture/respond_to_question/" + this.userId + "/" + this.pollingQuestionStudent.question_id + "/" + this.studentResponse)
                 .success(function (response) {
             })
                 .error(function (response) {
             });
         };
-        LiveViewController.$inject = ["$scope", "$http", "$timeout"];
+        LiveViewController.prototype.endLiveLecture = function () {
+            console.log("Ending live lecture...");
+            var self = this;
+            this.$http.get("/live_lecture/end/" + this.liveLectureId)
+                .success(function (response) {
+                if (response.results !== undefined && response.results == true) {
+                    self.$window.location.href = '/';
+                }
+                else {
+                    alert("Unable to end live lecture");
+                }
+            })
+                .error(function (response) {
+                alert("Unable to end live lecture");
+            });
+        };
+        LiveViewController.$inject = ["$scope", "$http", "$timeout", "$window"];
         return LiveViewController;
     }());
     ClassMoodApp.LiveViewController = LiveViewController;

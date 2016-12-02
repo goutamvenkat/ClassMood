@@ -7,6 +7,12 @@ var ClassMoodApp;
             this.$scope = $scope;
             this.$http = $http;
             this.$window = $window;
+            this.question_text = '';
+            this.a_text = '';
+            this.b_text = '';
+            this.c_text = '';
+            this.d_text = '';
+            this.ans = 'A';
             this.$http = $http;
             this.$scope = $scope;
             this.$window = $window;
@@ -16,23 +22,17 @@ var ClassMoodApp;
         }
         CreatePollingQuestionController.prototype.submitPollingQuestion = function () {
             var _this = this;
-            var text = this.question_text;
-            var a = this.a_text;
-            var b = this.b_text;
-            var c = this.c_text;
-            var d = this.d_text;
-            var ans = this.ans;
-            var options = [a, b, c, d];
-            // Ignore option a because we check that it is not undefined later
-            for (var i = 1; i < options.length; i++) {
-                if (options[i] === undefined) {
-                    options[i] = "";
-                }
-            }
-            console.log(text + " " + a + " " + b + " " + c + " " + d + " " + ans);
+            var text = encodeURIComponent(this.question_text);
+            var a = encodeURIComponent(this.a_text);
+            var b = encodeURIComponent(this.b_text);
+            var c = encodeURIComponent(this.c_text);
+            var d = encodeURIComponent(this.d_text);
+            var ans = encodeURIComponent(this.ans);
+            var url = "/create_polling_question/" + this.lecture_id + "/" + text + "/" + a + "/" + b + "/" + c + "/" + d + "/" + this.ans;
+            console.log(text + " " + a + " " + b + " " + c + " " + d + " " + this.ans);
             if (!this.isStudent) {
-                if (text && a && ans.length != 0) {
-                    this.$http.get("/create_polling_question/" + this.lecture_id + "/" + text + "/" + a + "/" + b + "/" + c + "/" + d + "/" + ans).then(function (response) {
+                if (text && ans.length != 0) {
+                    this.$http.get(url).then(function (response) {
                         if (response.data) {
                             _this.$window.location.href = "/pollingQuestionList/" + _this.classId + "/" + _this.lecture_id;
                         }

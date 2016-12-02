@@ -1,5 +1,5 @@
 from ClassMoodApp import app
-from flask import render_template, jsonify, request
+from flask import render_template, jsonify, request, redirect, url_for
 from ClassMoodApp.Models.API import API
 import json
 
@@ -45,9 +45,19 @@ def get_live_lecture(class_id):
     if not authUser:
         return render_template('authentication/login.html', error='You are not logged in')
     liveLectureId = API.get_live_lecture(class_id)
-    lectureId = API.get_lecture_from_live_lecture(liveLectureId)
+    if liveLectureId:
+        lectureId = API.get_lecture_from_live_lecture(liveLectureId)
     if liveLectureId and lectureId:
-        return render_template('liveView.html', username=API.get_authentication().first_name, user_id=API.get_authentication().id, lecture_id=lectureId, live_lecture_id=liveLectureId)
+        lectureTitle = API.get_lecture_title(lectureId)
+        return render_template('liveView.html', username=API.get_authentication().first_name, lecture_title=lectureTitle, class_id=class_id, user_id=API.get_authentication().id, lecture_id=lectureId, live_lecture_id=liveLectureId)
+    return redirect(url_for('login'))
+
+@app.route('/live_lecture/get_id/<int:class_id>', methods = ['GET'])
+def get_live_lecture_id(class_id):
+    authUser = API.get_authentication()
+    if not authUser:
+        return render_template('authentication/login.html', error='You are not logged in')
+    return jsonify(live_lecture_id=API.get_live_lecture(class_id))
 
 @app.route('/live_lecture/add_student/<int:live_lect_id>', methods = ['GET', 'POST'])
 def add_live_student(live_lect_id):
@@ -186,3 +196,10 @@ def reset_gauges(live_lecture_id):
     if not authUser:
         return render_template('authentication/login.html', error='You are not logged in')
     return jsonify(results=API.reset_gauges(live_lecture_id))
+
+@app.route('/live_lecture/end/<int:live_lecture_id>')
+def end_live_lecture(live_lecture_id):
+    authUser = API.get_authentication()
+    if not authUser:
+        return render_template('authentication/login.html', error='You are not logged in')
+    return jsonify(results=API.end_live_lecture(live_lecture_id))

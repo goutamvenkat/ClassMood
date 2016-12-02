@@ -97,14 +97,14 @@ module ClassMoodApp {
 
 
         public goLive(lectId: number): void {
-            let liveId = 1;
             this.$http.get(`/live_lecture/create/${lectId}`).then(
                 (response: any) => {
-                    liveId = response.data;
+                    if (response.data !== undefined) {
+                        let classId = parseInt(response.data, 10);
+                        this.$window.location.href = `/live_lecture/get/${classId}`;
+                    }
                 }
             )
-            console.log("going live");
-            this.$window.location.href = `/live_lecture/get/${this.classId}`;
         }
 
         public getPollingQuestions(lecture_id: number): void {

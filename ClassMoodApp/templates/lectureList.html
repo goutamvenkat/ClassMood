@@ -1,31 +1,31 @@
 {% extends "baseHomePage.html" %}
 {% block newPage %}
-<div class="panel panel-default" ng-controller="LectureListController as lCtrl" ng-init="lCtrl.init({{classId}})">
+<div class="panel panel-default container no-border" ng-controller="LectureListController as lCtrl" ng-init="lCtrl.init({{classId}})">
   <!-- Default panel contents -->
   <div class="panel-heading clearfix">
-      Lectures
+      <h4 id="page-header">Lectures</h4>
       <button type="button" class="btn btn-primary pull-right" ng-click="lCtrl.addLecture()">Add Lecture</button>
   </div>
-  <div class="panel-body">
-    
+  <div class="panel-body no-padding">
+    <!-- Table -->
+      <table class="table table-striped no-margin">
+          <tr>
+            <th>Lecture Title</th>
+            <th>Number of Questions</th>
+            <th>Creation Time</th>
+            <th>&nbsp;</th>
+            <th>&nbsp;</th>
+          </tr>
+          <tr ng-repeat="lecture in lCtrl.lectures">
+              <td class="table-item" ng-click="lCtrl.getPollingQuestions(lecture.lecture_id)">//lecture.lecture_name//</td>
+              <td>//lecture.num_questions//</td>
+              <td>//lecture.creation_time//</td>
+              <td><button class="btn btn-primary" ng-click="lCtrl.goLive(lecture.lecture_id)">Go Live!</button></td>
+              <div class="hover-btn" style="display: none">
+                <td><button type="button" class="close" ng-click="lCtrl.deleteLecture(lecture.lecture_id)"><span>×</span></button></td>
+              </div>
+          </tr>
+      </table>
   </div>
-
-  <!-- Table -->
-  <table class="table">
-      <tr>
-        <th>Lecture Title</th>
-        <th>Number of Questions</th>
-        <th>Creation Time</th>
-      </tr>
-      <tr ng-repeat="lecture in lCtrl.lectures">
-          <td ng-click="lCtrl.getPollingQuestions(lecture.lecture_id)">//lecture.lecture_name//</td>
-          <td>//lecture.num_questions//</td>
-          <td>//lecture.creation_time//</td>
-          <td><button class="btn btn-primary" ng-click="lCtrl.goLive(lecture.lecture_id)">Go Live!</button></td>
-          <div class="hover-btn" style="display: none">
-            <td><button type="button" class="close" ng-click="lCtrl.deleteLecture(lecture.lecture_id)"><span>×</span></button></td>
-          </div>
-      </tr>
-  </table>
 </div>
 {% endblock %}

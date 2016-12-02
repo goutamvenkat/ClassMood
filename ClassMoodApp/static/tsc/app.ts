@@ -1,7 +1,7 @@
 declare var angular: ng.IAngularStatic;
 module ClassMoodApp {
     "use strict";
-    export var app: ng.IModule = angular.module("ClassMoodApp", ["ngRoute", "ngMaterial"]);
+    export var app: ng.IModule = angular.module("ClassMoodApp", ["ngRoute", "ngMaterial", "ui.bootstrap"]);
     
     app.config(function($interpolateProvider) {
         $interpolateProvider.startSymbol('//').endSymbol('//');

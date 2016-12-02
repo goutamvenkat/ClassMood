@@ -4,13 +4,13 @@
 <nav class="navbar navbar-inverse navbar-top">
     <div class="container-fluid">
         <div class="navbar-header">
-            <a class="navbar-brand" href="#">Class Mood</a>
+            <a class="navbar-brand" href="/">Class Mood</a>
         </div>
         <ul class="nav navbar-nav navbar-right">
             <li><a href="{{url_for('login')}}"><span class="glyphicon glyphicon-home"></span></a></li>
             <li><a>Hi {{username}}!</a></li>
             <!-- <li><a href="{{url_for('logout')}}">Logout</a></li> -->
-            <li><button class="btn btn-primary" onclick="logout()">Logout</button></li>
+            <li><button id="logout" class="btn btn-primary" onclick="logout()">Logout</button></li>
         </ul>
     </div>
 </nav>

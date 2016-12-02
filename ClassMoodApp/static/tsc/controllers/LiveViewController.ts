@@ -3,7 +3,7 @@ declare var angular: ng.IAngularStatic;
 module ClassMoodApp {
     "use strict";
     export class LiveViewController {
-        static $inject = ["$scope", "$http", "$timeout"];
+        static $inject = ["$scope", "$http", "$timeout", "$window"];
         public isStudent: boolean;
         public gauge: GaugeModel;
         public questions: AnonymousQuestionsModel;
@@ -12,20 +12,25 @@ module ClassMoodApp {
         public pollingQuestionResponses:Array<PollingQuestionResponseModel>;
         public pollingQuestionStudent: PollingQuestionStudentModel;
         public pollingQuestionStudentExist: boolean;
+        public studentResponse: string;
         private userId: number;
         private lectureId: number;
+        private classId: number;
         private liveLectureId: number;
         private currentPollingQuestion: number;
         private currentlyPresenting: boolean;
         constructor(private $scope: ng.IScope,
                     private $http: ng.IHttpService,
-                    private $timeout: ng.ITimeoutService) {
+                    private $timeout: ng.ITimeoutService,
+                    private $window: ng.IWindowService) {
                         this.$http = $http;
                         this.$scope = $scope;
+                        this.$window = $window;
                         this.gauge = new GaugeModel();
                         this.gauge.depth_num = 0;
                         this.gauge.pace_num = 0;
                         this.questionEntered = '';
+                        this.studentResponse = 'A';
 						this.questions = new AnonymousQuestionsModel();
 						this.questions.questions_array = [];
 						this.questions.questions_string = '';
@@ -36,7 +41,8 @@ module ClassMoodApp {
                         this.pollingQuestionStudentExist = false;
                     }
 
-        public init(lecture_id: number, live_lecture_id: number): void {
+        public init(class_id: number, lecture_id: number, live_lecture_id: number): void {
+            this.classId = class_id;
             this.lectureId = lecture_id;
             this.liveLectureId = live_lecture_id;
             this.getIsStudent();
@@ -66,6 +72,7 @@ module ClassMoodApp {
                     {
                         this.getGauge(this);
                         this.pollQuestionsStudent(this);
+                        this.pollCurrentLiveLecture(this);
                     }
                 }
             )
@@ -168,6 +175,22 @@ module ClassMoodApp {
 			})
 		}
 
+        private pollCurrentLiveLecture(self): void {
+			this.$http.get(`/live_lecture/get_id/${this.classId}`)
+			.success(function(response: any) {
+				if (response.live_lecture_id != self.liveLectureId) {
+                    console.log("Live lecture changed or ended...");
+                    self.$window.location.href = '/';
+                } else {
+                    console.log("Live lecture matches current");
+                    self.$timeout(function() {self.pollCurrentLiveLecture(self)}, 15000);
+                }
+			})
+			.error(function(response: any) {
+				self.$timeout(function() {self.pollCurrentLiveLecture(self)}, 60000);
+			})
+		}
+
 		private submitPressed(): void {
 			this.submitAnonymousQuestion(this);
 		}
@@ -185,7 +208,7 @@ module ClassMoodApp {
 
         public resetGauges(): void {
             if (!this.isStudent) {
-                this.$http.get(`/reset_gauges/${this.lectureId}`).success(
+                this.$http.get(`/reset_gauges/${this.liveLectureId}`).success(
                     (data: any, status) => {
                         if (data.results === true) {
                             this.gaugePollPace(this);
@@ -364,21 +387,31 @@ module ClassMoodApp {
             })
         }
 
-        public studentQuestionReponse(ans : number): void {
-            var res = '';
-            if (ans == 0) {
-                res = 'A';
-            } else if (ans == 1) {
-                res = 'B';
-            } else if (ans == 2) {
-                res = 'C';
-            } else if (ans == 4) {
-                res = 'D';
-            }
-            this.$http.get(`/live_lecture/respond_to_question/${this.userId}/${this.pollingQuestionStudent.question_id}/${res}`)
+        public setStudentResponse(resp: string): void {
+            this.studentResponse = resp;
+        }
+
+        public studentQuestionReponse(): void {
+            this.$http.get(`/live_lecture/respond_to_question/${this.userId}/${this.pollingQuestionStudent.question_id}/${this.studentResponse}`)
             .success(function(response: any) {
             })
             .error(function(response: any) {
+            })
+        }
+
+        public endLiveLecture(): void {
+            console.log("Ending live lecture...");
+            var self = this;
+            this.$http.get(`/live_lecture/end/${this.liveLectureId}`)
+            .success(function(response: any) {
+                if (response.results !== undefined && response.results == true) {
+                    self.$window.location.href = '/';
+                } else {
+                    alert("Unable to end live lecture");
+                }
+            })
+            .error(function(response: any) {
+                alert("Unable to end live lecture");
             })
         }
 

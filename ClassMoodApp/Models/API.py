@@ -155,6 +155,14 @@ class API(object):
                 return lecture.id
         return None
 
+    # Returns the title of a given lecture
+    @staticmethod
+    def get_lecture_title(lecture_id):
+        lecture = DBModels.Lecture.query.filter_by(id=lecture_id).first()
+        if lecture is not None:
+            return lecture.name
+        return "Live Lecture"
+
     # disables the lecture that is live of class_id
     @staticmethod
     def disable_live_lecture(class_id):
@@ -181,7 +189,7 @@ class API(object):
                 if DBModels.db_add(new_live_lecture):
                     lecture_class.live_lecture_id = new_live_lecture.id
                     DBModels.db_update(lecture_class)
-                    return new_live_lecture.id
+                    return lecture_class.id
         return None
 
     # get current live lecture polling question
@@ -442,3 +450,12 @@ class API(object):
             gauge.pace = 0
             DBModels.db_update(gauge)
         return True
+
+    # Ends the the given live lecture
+    @staticmethod
+    def end_live_lecture(live_lecture_id):
+        liveClass = DBModels.Class.query.filter_by(live_lecture_id=live_lecture_id).first()
+        if liveClass is not None:
+            liveClass.live_lecture_id = None
+            return DBModels.db_update(liveClass)
+        return False

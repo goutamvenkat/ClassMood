@@ -78,12 +78,13 @@ var ClassMoodApp;
             });
         };
         LectureListController.prototype.goLive = function (lectId) {
-            var liveId = 1;
+            var _this = this;
             this.$http.get("/live_lecture/create/" + lectId).then(function (response) {
-                liveId = response.data;
+                if (response.data !== undefined) {
+                    var classId = parseInt(response.data, 10);
+                    _this.$window.location.href = "/live_lecture/get/" + classId;
+                }
             });
-            console.log("going live");
-            this.$window.location.href = "/live_lecture/get/" + this.classId;
         };
         LectureListController.prototype.getPollingQuestions = function (lecture_id) {
             if (this.isStudent !== true) {

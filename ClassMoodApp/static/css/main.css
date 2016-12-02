@@ -6,11 +6,33 @@
   background-image: url('/static/images/lecture.jpg');
 }
 
+.no-border {
+  border: 0;
+}
+
+.no-padding {
+  padding: 0;
+}
+
+.no-margin {
+  margin: 0;
+}
+
+#page-header {
+  margin: 0;
+  display: inline-block;
+}
+
 #show-dialog {
   margin-top: 20px;
 }
 #classList {
 	text-align: center;
+}
+
+#logout {
+  margin-top: 8px;
+  margin-right: 2px;
 }
 
 #createclassname {
@@ -19,6 +41,7 @@
 
 #questionsArea {
   text-indent:-62px;
+  margin-top: 5px;
 }
 
 #questionEnter {
@@ -28,6 +51,10 @@
 .live-view-panel {
   width: 80%;
   margin: 0 auto
+}
+
+.live-lecture-gauges {
+  margin-top: 20px;
 }
 
 .live-lecture-top {
@@ -54,6 +81,11 @@
   text-align: center;
 }
 
+.lecture-container {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
 .slider-table-right {
   width: 33%;
   text-align: right;
@@ -66,4 +98,26 @@
 
 .polling-questions-title {
   margin-top: 5px;
+}
+
+.live-lecture-header {
+  padding: 0;
+}
+
+.live-lecture-title {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.live-lecture-container {
+  margin-bottom: 5px;
+}
+
+.live-lecture-stop {
+  text-align: right;
+  padding-top: 10px;
+}
+
+.table-item {
+  text-decoration: underline;
 }
