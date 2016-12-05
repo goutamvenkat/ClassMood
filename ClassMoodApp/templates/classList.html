@@ -1,39 +1,29 @@
-{% extends "layout.html" %}
-{% block body %}
-<nav class="navbar navbar-inverse navbar-top">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">Class Mood</a>
-        </div>
-        <ul class="nav navbar-nav navbar-right">
-            <li><a href="{{url_for('login')}}"><span class="glyphicon glyphicon-home"></span></a></li>
-            <li><a>Hi {{username}}!</a></li>
-            <li><a href="{{url_for('logout')}}">Logout</a></li>
-        </ul>
-    </div>
-</nav>
-<div class="panel panel-default" ng-controller="ClassListController as myCtrl">
+{% extends "baseHomePage.html" %}
+{% block newPage %}
+<div class="panel panel-default container no-border" ng-controller="ClassListController as myCtrl">
   <!-- Default panel contents -->
   <div class="panel-heading clearfix">
-      Your Classes
-      <button type="button" class="btn btn-primary pull-right" ng-click="myCtrl.addClass()">Add Class</button>
+      <h4 id="page-header">Your Classes</h4>
+      <button type="button" class="btn btn-primary pull-right" ng-click="myCtrl.addClass()" ng-hide="!myCtrl.isStudent">Join Class</button>
+      <button type="button" class="btn btn-primary pull-right" ng-click="myCtrl.createLecture()" ng-hide="myCtrl.isStudent">Create Class</button>
   </div>
-  <div class="panel-body">
-    
+  <div class="panel-body no-padding">
+    <!-- Table -->
+      <table class="table table-striped no-margin">
+          <tr>
+            <th>Class</th>
+            <th>Live Lecture</th>
+            <th>&nbsp;</th>
+          </tr>
+          <tr ng-repeat="class in myCtrl.classes">
+              <td class="table-item" ng-click="myCtrl.getClassLectures(class.id)" ng-disabled="myCtrl.isStudent">//class.className//</td>
+              <td><button class="btn btn-danger" ng-click="myCtrl.joinLecture(class.liveLectureId)" ng-hide="!class.is_live">Live!</button></td>
+              <div class="hover-btn" style="display: none">
+                <td><button type="button" class="close" ng-click="myCtrl.deleteClass(class.id)"><span>×</span></button></td>
+              </div>
+              <!-- <td><button class="btn btn-primary" ng-click="myCtrl.addLecture(class.className)" ng-hide="myCtrl.isStudent" ng-disabled="class.is_live">Add Lecture</button></td> -->
+          </tr>
+      </table>
   </div>
-
-  <!-- Table -->
-  <table class="table">
-      <tr>
-        <th>Class</th>
-        <th>Live Lecture</th>
-        <th ng-hide="myCtrl.isStudent">Add Lecture</th>
-      </tr>
-      <tr ng-repeat="class in myCtrl.classes">
-          <td>//class.className//</td>
-          <td><button class="btn btn-default" ng-click="myCtrl.joinLecture(class.liveLectureId)" ng-disabled="!class.is_live">Join/Rejoin</button></td>
-          <td><button class="btn btn-primary" ng-click="myCtrl.addLecture(class.className)" ng-hide="myCtrl.isStudent" ng-disabled="class.is_live">Add Lecture</button></td>
-      </tr>
-  </table>
 </div>
 {% endblock %}

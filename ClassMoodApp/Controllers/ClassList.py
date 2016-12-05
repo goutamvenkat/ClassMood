@@ -4,6 +4,15 @@ from ClassMoodApp.Models.API import API
 import json
 
 login_page = 'authentication/login.html'
+main_page = 'classList.html'
+
+
+@app.route('/classList', methods=['GET'])
+def classList():
+    authUser = API.get_authentication()
+    if not authUser:
+        return render_template(login_page, error='You are not logged in')
+    return render_template(main_page, username=API.get_authentication().first_name, user_id=API.get_authentication().id)
 
 @app.route('/getClassList', methods=['GET'])
 def getClassList():
@@ -20,9 +29,9 @@ def getClassList():
         class_id = API.get_class_id(each_class)
         live_lecture_id = API.get_live_lecture(class_id)
         if live_lecture_id:
-            class_info.append({'className': each_class, 'liveLectureId': live_lecture_id, 'is_live': True})
+            class_info.append({'className': each_class, 'id' : class_id, 'liveLectureId': live_lecture_id, 'is_live': True})
         else:
-            class_info.append({'className': each_class, 'liveLectureId': live_lecture_id, 'is_live': False})
+            class_info.append({'className': each_class, 'id' : class_id, 'liveLectureId': live_lecture_id, 'is_live': False})
     return jsonify(results=class_info)
 
 @app.route('/is_student', methods=['GET'])
@@ -39,16 +48,23 @@ def createClass(className):
         return render_template(login_page, error='You are not logged in')
     return json.dumps(API.create_prof_class(className, authUser.id))
 
-@app.route('/add_lecture/<class_name>', methods=['GET', 'POST'])
-def add_lecture(class_name):
-    class_id = API.get_class_id(class_name)    
-    new_lecture_id = API.create_live_lecture(class_id)
-    return json.dumps(new_lecture_id)
-
-@app.route('/join_lecture/<int:lecture_id>', methods=['GET', 'POST'])
-def join_lecture(lecture_id):
-    return json.dumps(API.add_student_to_lecture(lecture_id))
-
 @app.route('/set_student_classes/<class_name>/<int:student_id>', methods = ['GET', 'POST'])
 def set_student_classes(class_name, student_id):
+    authUser = API.get_authentication()
+    if not authUser:
+        return render_template('authentication/login.html', error='You are not logged in')
     return json.dumps(API.set_student_class(class_name, student_id))
+
+@app.route('/delete/class/<int:class_id>', methods = ['GET', 'POST'])
+def delete_class(class_id):
+    authUser = API.get_authentication()
+    if not authUser:
+        return render_template('authentication/login.html', error='You are not logged in')
+    return jsonify(results=API.delete_class(class_id))
+
+@app.route('/delete/class_student/<int:student_id>/<int:class_id>', methods = ['GET', 'POST'])
+def delete_class_student(student_id, class_id):
+    authUser = API.get_authentication()
+    if not authUser:
+        return render_template('authentication/login.html', error='You are not logged in')
+    return jsonify(results=API.delete_class_student(student_id, class_id))

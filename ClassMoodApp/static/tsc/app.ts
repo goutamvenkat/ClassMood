@@ -1,13 +1,13 @@
 declare var angular: ng.IAngularStatic;
 module ClassMoodApp {
     "use strict";
-    export var app: ng.IModule = angular.module("ClassMoodApp", ["ngRoute", "ngMaterial"]);
+    export var app: ng.IModule = angular.module("ClassMoodApp", ["ngRoute", "ngMaterial", "ui.bootstrap"]);
     
     app.config(function($interpolateProvider) {
         $interpolateProvider.startSymbol('//').endSymbol('//');
     });
 
-    app.config(['$routeProvider', '$locationProvider', 
+    app.config(['$routeProvider', '$locationProvider',
             ($routeProvider, $locationProvider) => {
 		$routeProvider
 		.when( "/", {
@@ -18,8 +18,22 @@ module ClassMoodApp {
         })
         .when("/liveView", {
             templateUrl: "/templates/liveView.html"
+        })
+        .when("/lectureList/:classId", {
+            templateUrl: "templates/lectureList.html",
+            controller: "LectureListController"
+        })
+        .when("/pollingQuestionList/:class_id/:lecture_id", {
+            templateUrl: "templates/pollingQuestionList.html",
+            controller: "PollingQuestionListController"
+        })
+        .when("/pollingQuestionList/:class_id/:lecture_id/createPollingQuestion", {
+            templateUrl: "templates/createPollingQuestion.html",
+            controller: "CreatePollingQuestionController"
         });
 
 		$locationProvider.html5Mode(true);
 	}]);
+
+
 }

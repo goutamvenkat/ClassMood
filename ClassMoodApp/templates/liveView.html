@@ -1,89 +1,138 @@
-{% extends "layout.html" %}
-{% block body %}
-<nav class="navbar navbar-inverse navbar-top">
-    <div class="container-fluid">
-        <div class="navbar-header">
-            <a class="navbar-brand" href="#">Class Mood</a>
+{% extends "baseHomePage.html" %}
+{% block newPage %}
+<div ng-controller="LiveViewController as myCtrl">
+    <div class="container live-lecture-container live-lecture-header" style="border-bottom: thin solid #000000;padding-bottom:10px">
+        <div class="col-md-8 live-lecture-header">
+            <h2 class="live-lecture-title">{{lecture_title}}</h2>
         </div>
-        <ul class="nav navbar-nav navbar-right">
-            <li><a href="{{url_for('login')}}"><span class="glyphicon glyphicon-home"></span></a></li>
-            <li><a>Hi {{username}}!</a></li>
-            <li><a href="{{url_for('logout')}}">Logout</a></li>
-        </ul>
-    </div>
-</nav>
-
-<div id="lectureId" lecture-id="{{lecture_id}}"></div>
-
-<div class="panel panel-default container" ng-controller="LiveViewController as myCtrl">
-    <div class="row">
-        <div class="col-md-4 well">
-            <div ng-hide="!myCtrl.isStudent">
-                <h5 class="slider-header">Lecture Pace</h5>
-                <div class="btn-group" data-toggle="buttons">
-                    <label class="btn btn-primary" ng-click="myCtrl.votePace(-1)">
-                        <input type="radio" name="options" id="pace1" autocomplete="off">Too Slow
-                    </label>
-                    <label class="btn btn-primary" ng-click="myCtrl.votePace(0)">
-                        <input type="radio" name="options" id="pace2" autocomplete="off">Good
-                    </label>
-                    <label class="btn btn-primary" ng-click="myCtrl.votePace(1)">
-                        <input type="radio" name="options" id="pace3" autocomplete="off">Too Fast
-                    </label>
-                </div>
-                <h5 class="slider-header">Lecture Depth</h5>
-                <div class="btn-group" data-toggle="buttons">
-                    <label class="btn btn-primary" ng-click="myCtrl.voteDepth(-1)">
-                        <input type="radio" name="options" id="depth1" autocomplete="off">Too Shallow
-                    </label>
-                    <label class="btn btn-primary" ng-click="myCtrl.voteDepth(0)">
-                        <input type="radio" name="options" id="depth2" autocomplete="off">Good
-                    </label>
-                    <label class="btn btn-primary" ng-click="myCtrl.voteDepth(1)">
-                        <input type="radio" name="options" id="depth3" autocomplete="off">Too In-Depth
-                    </label>
-                </div>
-            </div>
-            <div ng-hide="myCtrl.isStudent">
-                <h5 class="slider-header">Lecture Pace</h5>
-                <table class="slider-label-table">
-                    <tr>
-                        <td class="slider-table-left">Too Slow</td>
-                        <td class="slider-table-center">Good</td>
-                        <td class="slider-table-right">Too Fast</td>
-                    </tr>
-                </table>
-                <input id="paceSlider" class="mdl-slider mdl-js-slider" type="range" min="-1" max="1" step="0.01" value="// myCtrl.gauge.pace_num //" disabled>
-                <h5 class="slider-header">Lecture Depth</h5>
-                <table class="slider-label-table">
-                    <tr>
-                        <td class="slider-table-left">Too Shallow</td>
-                        <td class="slider-table-center">Good</td>
-                        <td class="slider-table-right">Too In-Depth</td>
-                    </tr>
-                </table>
-                <input id="depthSlider" class="mdl-slider mdl-js-slider" type="range" min="-1" max="1" step="0.01" value="// myCtrl.gauge.depth_num //" disabled>
-            </div>
-        </div>
-
-        <div class="col-md-8">
-            Questions
+        <div class="col-md-4 live-lecture-header live-lecture-stop">
+            <button type="button" class="btn btn-danger" ng-click="myCtrl.endLiveLecture()" ng-hide="myCtrl.isStudent">End Live Lecture</button>
         </div>
     </div>
-    <div class="row">
-        <center>
-            <textarea id="questionsArea" rows="6" cols="80" readonly>
-                //myCtrl.questions.questions_string//
-            </textarea>
-
-            <div ng-show="myCtrl.isStudent">
-                <form>
-                    Enter a question:
-                    <input type="text" ng-model="myCtrl.questionEntered" id="questionEnter">
-                    <button ng-click="myCtrl.submitPressed()">Submit</button>
-                </form>
+    <div class="panel panel-default container lecture-container no-border">
+        <div ng-init="myCtrl.init({{class_id}}, {{lecture_id}}, {{live_lecture_id}})"></div>
+        <div class="live-lecture-top row">
+            <div class="col-md-4 well live-lecture-gauges">
+                <div ng-hide="!myCtrl.isStudent" align="center">
+                    <h5 class="slider-header">Lecture Pace</h5>
+                    <div class="btn-group" data-toggle="buttons" align="center">
+                        <label class="btn btn-primary" ng-click="myCtrl.votePace(-1)">
+                            <input type="radio" name="options" id="pace1" autocomplete="off">Too Slow
+                        </label>
+                        <label class="btn btn-primary" ng-click="myCtrl.votePace(0)">
+                            <input type="radio" name="options" id="pace2" autocomplete="off">Good
+                        </label>
+                        <label class="btn btn-primary" ng-click="myCtrl.votePace(1)">
+                            <input type="radio" name="options" id="pace3" autocomplete="off">Too Fast
+                        </label>
+                    </div>
+                    <h5 class="slider-header" style="padding-top:1em">Lecture Depth</h5>
+                    <div class="btn-group" data-toggle="buttons">
+                        <label class="btn btn-primary" ng-click="myCtrl.voteDepth(-1)">
+                            <input type="radio" name="options" id="depth1" autocomplete="off">Too Shallow
+                        </label>
+                        <label class="btn btn-primary" ng-click="myCtrl.voteDepth(0)">
+                            <input type="radio" name="options" id="depth2" autocomplete="off">Good
+                        </label>
+                        <label class="btn btn-primary" ng-click="myCtrl.voteDepth(1)">
+                            <input type="radio" name="options" id="depth3" autocomplete="off">Too In-Depth
+                        </label>
+                    </div>
+                </div>
+                <div ng-hide="myCtrl.isStudent" align="center">
+                    <h5 class="slider-header">Lecture Pace</h5>
+                        <table class="slider-label-table">
+                            <tr>
+                                <td class="slider-table-left">Too Slow</td>
+                                <td class="slider-table-center">Good</td>
+                                <td class="slider-table-right">Too Fast</td>
+                            </tr>
+                        </table>
+                    <input id="paceSlider" class="mdl-slider mdl-js-slider" type="range" min="-1" max="1" step="0.01" value="// myCtrl.gauge.pace_num //" disabled>
+                    <h5 class="slider-header" style="padding-top:1em">Lecture Depth</h5>
+                    <table class="slider-label-table">
+                        <tr>
+                            <td class="slider-table-left">Too Shallow</td>
+                            <td class="slider-table-center">Good</td>
+                            <td class="slider-table-right">Too In-Depth</td>
+                        </tr>
+                    </table>
+                    <input id="depthSlider" class="mdl-slider mdl-js-slider" type="range" min="-1" max="1" step="0.01" value="// myCtrl.gauge.depth_num //" disabled>
+                </div>
+                <div align="center" style="padding-top:1em">
+                    <button class="btn btn-default" ng-click="myCtrl.resetGauges()" ng-hide="myCtrl.isStudent" ng-model="myCtrl.reset">Reset Gauges</button>
+                </div>
             </div>
-        </center>
+            <div class="col-md-8">
+                <div ng-hide="myCtrl.isStudent || myCtrl.pollingQuestions == null || myCtrl.pollingQuestions.length == 0">
+                    <h5 class="polling-questions-title" style="border-bottom: thin solid #7F7F7F;padding-bottom:5px;width:153px">Polling Question</h5>
+                    <span id="question-text"></span>
+                    <div class="polling-question-answer">
+                        <label class="btn" id="a-question-button">A</label> <span id="a-text"></span>
+                    </div>
+                    <div class="polling-question-answer">
+                        <label class="btn" id="b-question-button">B</label> <span id="b-text"></span>
+                    </div>
+                    <div class="polling-question-answer">
+                        <label class="btn" id="c-question-button">C</label> <span id="c-text"></span>
+                    </div>
+                    <div class="polling-question-answer">
+                        <label class="btn" id="d-question-button">D</label> <span id="d-text"></span>
+                    </div>
+                    <div>
+                        <span id="question-pagination">
+                        </span>
+                        <button type="button" class="btn btn-default" aria-label="Left Align" ng-click="myCtrl.previousPollingQuestion()"><span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span></button>
+                        <button type="button" class="btn btn-default" aria-label="Left Align" ng-click="myCtrl.nextPollingQuestion()"><span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span></button>
+                        <button type="button" class="btn btn-success" ng-click="myCtrl.beginPresentingQuestion()" ng-hide="myCtrl.currentlyPresenting">Present Question</button>
+                        <button type="button" class="btn btn-danger" ng-click="myCtrl.stopPresentingQuestion()" ng-hide="!myCtrl.currentlyPresenting">Stop Presenting</button>
+                    </div>
+                </div>
+                <div ng-show="myCtrl.isStudent && myCtrl.pollingQuestionStudentExist">
+                    <h5 class="polling-questions-title" style="border-bottom: thin solid #7F7F7F;padding-bottom:5px;width:153px">Polling Question</h5>
+                    <span> //myCtrl.pollingQuestionStudent.question_text// </span>
+                    <form>
+                        <div style="padding-bottom:10px">
+                            A: //myCtrl.pollingQuestionStudent.a_text//<br>
+                            B: //myCtrl.pollingQuestionStudent.b_text//<br>
+                            C: //myCtrl.pollingQuestionStudent.c_text//<br>
+                            D: //myCtrl.pollingQuestionStudent.d_text//
+                        </div>
+                        <div class="btn-group" data-toggle="buttons">
+                            <label class="btn btn-primary active" ng-click="myCtrl.setStudentResponse('A')">
+                                <input type="radio" name="polling_response" value="A" checked autocomplete="off">A
+                            </label>
+                            <label class="btn btn-primary" ng-click="myCtrl.setStudentResponse('B')">
+                                <input type="radio" name="polling_response" value="B" autocomplete="off">B
+                            </label>
+                            <label class="btn btn-primary" ng-click="myCtrl.setStudentResponse('C')">
+                                <input type="radio" name="polling_response" value="C" autocomplete="off">C
+                            </label>
+                            <label class="btn btn-primary" ng-click="myCtrl.setStudentResponse('D')">
+                                <input type="radio" name="polling_response" value="D" autocomplete="off">D
+                            </label>
+                        </div>
+                        <button ng-click="myCtrl.studentQuestionReponse()">Submit Answer</button>
+                    </form>
+                </div>
+                <div ng-show="myCtrl.isStudent && !myCtrl.pollingQuestionStudentExist" style="padding-top:75px;padding-left:150px">
+                    <h3>No polling question.. for now.</h3>
+                </div>
+            </div>
+        </div>
+        <div class="row" >
+            <center>
+                <textarea id="questionsArea" rows="6" style="width:100%;" readonly>
+                    //myCtrl.questions.questions_string//
+                </textarea>
+                <div ng-show="myCtrl.isStudent">
+                    <form>
+                        <input type="text" placeholder=" Enter a question.."ng-model="myCtrl.questionEntered" id="questionEnter" style="width:89%">
+                        <button ng-click="myCtrl.submitPressed()">Submit Question</button>
+                    </form>
+                </div>
+            </center>
+        </div>
     </div>
 </div>
 {% endblock %}

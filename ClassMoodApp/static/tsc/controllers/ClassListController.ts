@@ -21,7 +21,7 @@ module ClassMoodApp {
 
         private getCurrentClasses(): void {
             this.$http.get("/getClassList").success(
-                (data: Array<ClassListModel>, status) => {
+                (data: any, status) => {
                     this.classes = data.results;
                 }
             ).catch((error) => {
@@ -39,7 +39,7 @@ module ClassMoodApp {
 
         private getIsProfessor(): void {
             this.$http.get("/is_student").success(
-                (is_student: boolean, status) => {
+                (is_student: any, status) => {
                     this.isStudent = is_student.results;
                 }
             )
@@ -85,15 +85,28 @@ module ClassMoodApp {
             )
         }
 
-        public addLecture(className:string): void {
-            this.$http.get(`/add_lecture/${className}`).then(
-                (response: any) => {
-                    console.log(`NEW LECTURE ID: ${response.data}`);
+        public createLecture(): void {
+            bootbox.prompt({
+                title: "Enter Class Name",
+                inputType: 'textarea',
+                callback: (className: string) => {
+                    if (className != null) {
+                        console.log(className);
+                        // go to the lecture list page
+                    } 
                 }
-            ).then(
-                () => {this.getCurrentClasses();}
-            )
+            });
         }
+
+        // public addLecture(className:string): void {
+        //     this.$http.get(`/add_lecture/${className}`).then(
+        //         (response: any) => {
+        //             console.log(`NEW LECTURE ID: ${response.data}`);
+        //         }
+        //     ).then(
+        //         () => {this.getCurrentClasses();}
+        //     )
+        // }
 
         public joinLecture(liveLectureId: number): void {
             if (this.isStudent === true) {
@@ -105,6 +118,37 @@ module ClassMoodApp {
             }
             // At this point just open the lecture page so that students and professor are both viewing the same material (Except for gauges).
             this.$window.location.href = `/live_lecture/get/${liveLectureId}`;
+        }
+
+        public deleteClass(classId: number) {
+            console.log("hi")
+            if (this.isStudent) {
+                this.$http.get(`/delete/class_student/${this.userId}/${classId}`).success(
+                    (data: any, status) => {
+                        if (data.results === true) {
+                            this.getCurrentClasses();
+                        }
+                    }
+                ).catch((error) => {
+                    console.log(error);
+                });
+            } else {
+                this.$http.get(`/delete/class/${classId}`).success(
+                    (data: any, status) => {
+                        if (data.results === true) {
+                            this.getCurrentClasses();
+                        }
+                    }
+                ).catch((error) => {
+                    console.log(error);
+                });
+            }
+        }
+
+        public getClassLectures(classId: number): void {
+            if (this.isStudent !== true) {
+                this.$window.location.href = `/lectureList/${classId}`;
+            }
         }
     }
     app.controller('ClassListController', ClassListController);

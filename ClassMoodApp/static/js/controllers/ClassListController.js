@@ -74,12 +74,26 @@ var ClassMoodApp;
                 }
             });
         };
-        ClassListController.prototype.addLecture = function (className) {
-            var _this = this;
-            this.$http.get("/add_lecture/" + className).then(function (response) {
-                console.log("NEW LECTURE ID: " + response.data);
-            }).then(function () { _this.getCurrentClasses(); });
+        ClassListController.prototype.createLecture = function () {
+            bootbox.prompt({
+                title: "Enter Class Name",
+                inputType: 'textarea',
+                callback: function (className) {
+                    if (className != null) {
+                        console.log(className);
+                    }
+                }
+            });
         };
+        // public addLecture(className:string): void {
+        //     this.$http.get(`/add_lecture/${className}`).then(
+        //         (response: any) => {
+        //             console.log(`NEW LECTURE ID: ${response.data}`);
+        //         }
+        //     ).then(
+        //         () => {this.getCurrentClasses();}
+        //     )
+        // }
         ClassListController.prototype.joinLecture = function (liveLectureId) {
             if (this.isStudent === true) {
                 this.$http.get("/join_lecture/" + liveLectureId).then(function (response) {
@@ -88,6 +102,33 @@ var ClassMoodApp;
             }
             // At this point just open the lecture page so that students and professor are both viewing the same material (Except for gauges).
             this.$window.location.href = "/live_lecture/get/" + liveLectureId;
+        };
+        ClassListController.prototype.deleteClass = function (classId) {
+            var _this = this;
+            console.log("hi");
+            if (this.isStudent) {
+                this.$http.get("/delete/class_student/" + this.userId + "/" + classId).success(function (data, status) {
+                    if (data.results === true) {
+                        _this.getCurrentClasses();
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }
+            else {
+                this.$http.get("/delete/class/" + classId).success(function (data, status) {
+                    if (data.results === true) {
+                        _this.getCurrentClasses();
+                    }
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            }
+        };
+        ClassListController.prototype.getClassLectures = function (classId) {
+            if (this.isStudent !== true) {
+                this.$window.location.href = "/lectureList/" + classId;
+            }
         };
         ClassListController.$inject = ["$scope", "$http", "$window"];
         return ClassListController;

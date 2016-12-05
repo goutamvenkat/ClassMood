@@ -1,5 +1,5 @@
 from ClassMoodApp import app
-from flask import render_template, request, session, jsonify
+from flask import render_template, request, session, jsonify, redirect, make_response
 from ClassMoodApp.Models.API import API
 
 login_page = 'authentication/login.html'
@@ -12,26 +12,33 @@ def login():
     return render_template(login_page)
 
 @app.route('/loginUser', methods=['POST'])
-def loginUser():
-    email = request.form['email']
-    password = request.form['userpass']
-    user = API.validate_login(email, password)
+@app.route('/loginUser/<email>/<name>', methods=['GET', 'POST'])
+def loginUser(email=None, name=None):
+    user = None
+    if not email and not name:
+        email = request.form['email']
+        password = request.form['userpass']
+        user = API.validate_login(email, password)
+    elif email and name:
+        user = API.get_google_user(email, name)
     if user:
         session_token = API.create_session(user.id)
         if not session_token:
             return render_template(login_page, error='Failed to create token')
-        session["token"] = session_token
-        usertype = API.get_access(user.user_type)
-        return render_template(main_page, username=API.get_authentication().first_name, user_id=API.get_authentication().id)
-
+        resp = make_response(render_template(main_page, 
+                                            username=API.get_authentication(session_token).first_name,
+                                            user_id=API.get_authentication(session_token).id))
+        resp.set_cookie('token', str(session_token))
+        return resp
     return render_template(login_page, error='Invalid email or password')
 
 @app.route('/logoutUser', methods=['GET', 'POST'])
 def logout():
-    token = session["token"]
-    API.delete_session(token)
-    session.pop('token', None)
-    return render_template(login_page, message='You have been logged out')
+    session_token = request.cookies.get('token')
+    API.delete_session(session_token)
+    resp = make_response(render_template(login_page, message='You have been logged out'))
+    resp.set_cookie('token', '')
+    return resp
 
 @app.route('/user_id', methods=['GET'])
 def user_id():
@@ -39,3 +46,7 @@ def user_id():
     if auth:
         return jsonify(results=auth.id)
     return jsonify(results=[])
+
+@app.route('/is_google_user', methods=['GET'])
+def is_google_user():
+    return jsonify(results=API.is_google_account())

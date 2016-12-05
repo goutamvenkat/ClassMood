@@ -1,0 +1,45 @@
+{% extends "baseHomePage.html" %}
+{% block newPage %}
+<div class="panel panel-default container no-border">
+  <div class="panel-heading clearfix">
+    <h4 id="page-header">Create New Polling Question</h4>
+  </div>
+  <div class="panel-body no-padding" ng-controller="CreatePollingQuestionController as ctrl">
+    <form ng-submit="ctrl.submitPollingQuestion()">
+      <h5>Polling Question Text</h5>
+      <textarea class="form-control" rows="4" cols="50" ng-model="ctrl.question_text"></textarea>
+      <br><br>
+      <h5>Answer Choices (use radio buttons at the bottom to select the correct answer):</h5> <br>
+      <label class="radio">
+        <div class="input-group">
+            <span class="input-group-addon" id="basic-addon1">A</span>
+            <input type="text" class="form-control" ng-model="ctrl.a_text"/><br>
+        </div>
+
+        <div class="input-group">
+            <span class="input-group-addon" id="basic-addon1">B</span>
+            <input type="text" class="form-control" ng-model="ctrl.b_text"/><br>
+        </div>
+        <div class="input-group">
+            <span class="input-group-addon" id="basic-addon1">C</span>
+            <input type="text" class="form-control" ng-model="ctrl.c_text"/><br>
+        </div>
+
+        <div class="input-group">
+            <span class="input-group-addon" id="basic-addon1">D</span>
+            <input type="text" class="form-control" ng-model="ctrl.d_text"/><br>
+        </div>
+        <br>
+        <div class="btn-group">
+            <label class="btn btn-primary" ng-model="ctrl.ans" uib-btn-radio="'A'">A</label>
+            <label class="btn btn-primary" ng-model="ctrl.ans" uib-btn-radio="'B'">B</label>
+            <label class="btn btn-primary" ng-model="ctrl.ans" uib-btn-radio="'C'">C</label>
+            <label class="btn btn-primary" ng-model="ctrl.ans" uib-btn-radio="'D'">D</label>
+        </div> 
+        <br><br>
+        <button type="submit" class="btn btn-primary" value="Save Question">Submit</button>
+      </label>
+    </form>
+  </div>
+</div>
+{% endblock %}

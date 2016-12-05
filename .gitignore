@@ -94,3 +94,5 @@ ENV/
 #Kyle's crap
 *.exe
 .vscode/
+*.db-journal
+debug.sh

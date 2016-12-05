@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+{% block body %}
+<script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
+<nav class="navbar navbar-inverse navbar-top">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/">Class Mood</a>
+        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="{{url_for('login')}}"><span class="glyphicon glyphicon-home"></span></a></li>
+            <li><a>Hi {{username}}!</a></li>
+            <!-- <li><a href="{{url_for('logout')}}">Logout</a></li> -->
+            <li><button id="logout" class="btn btn-primary" onclick="logout()">Logout</button></li>
+        </ul>
+    </div>
+</nav>
+<script type="text/javascript">
+	function onLoad() {
+		gapi.load('auth2', function() {
+        	gapi.auth2.init();
+      	});
+	}
+	function logout() {
+		$.get('/is_google_user').then(
+			function (data, status) {
+				console.log(data.results);
+				if (data.results === true) {
+					
+					var auth2 = gapi.auth2.getAuthInstance();
+    					auth2.signOut().then(function () {
+      					console.log('User signed out.');
+    				});
+				}
+				$.get('/logoutUser').then(
+					function (data, status) {
+						console.log('SUCCESSFUL LOGOUT');
+						window.location.href='/';
+					}
+				)
+			}
+		)
+	}
+</script>
+<div class=page>
+    {% block newPage %}{% endblock %}
+</div>
+
+{% endblock %}
