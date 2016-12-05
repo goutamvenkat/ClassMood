@@ -33,7 +33,7 @@ Using the terminal, first cd into the ClassMood directory. To ensure everything 
 
 ### **Run Instructions**
 
-Then run the command `python runserver.py`. Go to the browser and visit [http://localhost:5000](http://localhost:5000  
+Then run the command `python runserver.py`. Go to the browser and visit [http://localhost:5000](http://localhost:5000)  
 
 ### Troubleshooting
 
