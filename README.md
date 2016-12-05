@@ -33,6 +33,10 @@ Using the terminal, first cd into the ClassMood directory. To ensure everything 
 
 ### **Run Instructions**
 
-Then run the command `python runserver.py`. Go to the browser and visit http://localhost:5000 Troubleshooting: The most common error during installation is that a python library is not installed. If that is the case then simply run `pip install <that library>`. If you do not pip or the python package manager then follow these instructions to get it.
+Then run the command `python runserver.py`. Go to the browser and visit [http://localhost:5000](http://localhost:5000  
+
+### Troubleshooting
+
+ The most common error during installation is that a python library is not installed. If that is the case then simply run `pip install <that library>`. If you do not pip or the python package manager then follow these instructions to get it.
 
 
