@@ -85,43 +85,26 @@ module ClassMoodApp {
             )
         }
 
-        public createLecture(): void {
-            bootbox.prompt({
-                title: "Enter Class Name",
-                inputType: 'textarea',
-                callback: (className: string) => {
-                    if (className != null) {
-                        console.log(className);
-                        // go to the lecture list page
-                    } 
-                }
-            });
-        }
-
-        // public addLecture(className:string): void {
-        //     this.$http.get(`/add_lecture/${className}`).then(
-        //         (response: any) => {
-        //             console.log(`NEW LECTURE ID: ${response.data}`);
-        //         }
-        //     ).then(
-        //         () => {this.getCurrentClasses();}
-        //     )
-        // }
-
         public joinLecture(liveLectureId: number): void {
             if (this.isStudent === true) {
-                this.$http.get(`/join_lecture/${liveLectureId}`).then(
+                this.$http.get(`/join_live_lecture/${liveLectureId}`).then(
                     (response: any) => {
                         console.log(`JOINED LECTURE AND UPDATED STUDENT COUNT: ${response.data}`);
+                        if (response.data !== undefined) {
+                            var classId = parseInt(response.data, 10);
+                            if (classId > 0) {
+                                // At this point just open the lecture page so that students and professor are both viewing the same material (Except for gauges).
+                                this.$window.location.href = `/live_lecture/get/${classId}`;
+                            } else {
+                                alert("Invalid class id returned.");
+                            }
+                        }
                     }
                 )
             }
-            // At this point just open the lecture page so that students and professor are both viewing the same material (Except for gauges).
-            this.$window.location.href = `/live_lecture/get/${liveLectureId}`;
         }
 
         public deleteClass(classId: number) {
-            console.log("hi")
             if (this.isStudent) {
                 this.$http.get(`/delete/class_student/${this.userId}/${classId}`).success(
                     (data: any, status) => {

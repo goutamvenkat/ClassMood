@@ -270,15 +270,21 @@ class API(object):
         live_lecture = DBModels.LiveLecture.query.filter_by(id=live_lecture_id).first()
         if live_lecture:
             live_lecture.num_students += 1
-            return DBModels.db_update(live_lecture)
-        return False
+            if DBModels.db_update(live_lecture):
+                live_class = DBModels.Class.query.filter_by(live_lecture_id=live_lecture_id).first()
+                if live_class is not None:
+                    return live_class.id
+        return -1
 
     # Gets the pace for a live lecture
     @staticmethod
     def get_pace(live_lecture_id):
         live_lecture = DBModels.LiveLecture.query.filter_by(id=live_lecture_id).first()
         if live_lecture:
-            return live_lecture.pace_total / live_lecture.num_students
+            if live_lecture.num_students > 0:
+                return live_lecture.pace_total / live_lecture.num_students
+            else:
+                return 0
         return None
 
     # Gets the depth for a live lecture
@@ -286,7 +292,10 @@ class API(object):
     def get_depth(live_lecture_id):
         live_lecture = DBModels.LiveLecture.query.filter_by(id=live_lecture_id).first()
         if live_lecture:
-            return live_lecture.depth_total / live_lecture.num_students
+            if live_lecture.num_students > 0:
+                return live_lecture.depth_total / live_lecture.num_students
+            else:
+                return 0
         return None
 
     # Change the total pace by num for a live lecture

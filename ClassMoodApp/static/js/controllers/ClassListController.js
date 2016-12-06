@@ -74,38 +74,26 @@ var ClassMoodApp;
                 }
             });
         };
-        ClassListController.prototype.createLecture = function () {
-            bootbox.prompt({
-                title: "Enter Class Name",
-                inputType: 'textarea',
-                callback: function (className) {
-                    if (className != null) {
-                        console.log(className);
-                    }
-                }
-            });
-        };
-        // public addLecture(className:string): void {
-        //     this.$http.get(`/add_lecture/${className}`).then(
-        //         (response: any) => {
-        //             console.log(`NEW LECTURE ID: ${response.data}`);
-        //         }
-        //     ).then(
-        //         () => {this.getCurrentClasses();}
-        //     )
-        // }
         ClassListController.prototype.joinLecture = function (liveLectureId) {
+            var _this = this;
             if (this.isStudent === true) {
-                this.$http.get("/join_lecture/" + liveLectureId).then(function (response) {
+                this.$http.get("/join_live_lecture/" + liveLectureId).then(function (response) {
                     console.log("JOINED LECTURE AND UPDATED STUDENT COUNT: " + response.data);
+                    if (response.data !== undefined) {
+                        var classId = parseInt(response.data, 10);
+                        if (classId > 0) {
+                            // At this point just open the lecture page so that students and professor are both viewing the same material (Except for gauges).
+                            _this.$window.location.href = "/live_lecture/get/" + classId;
+                        }
+                        else {
+                            alert("Invalid class id returned.");
+                        }
+                    }
                 });
             }
-            // At this point just open the lecture page so that students and professor are both viewing the same material (Except for gauges).
-            this.$window.location.href = "/live_lecture/get/" + liveLectureId;
         };
         ClassListController.prototype.deleteClass = function (classId) {
             var _this = this;
-            console.log("hi");
             if (this.isStudent) {
                 this.$http.get("/delete/class_student/" + this.userId + "/" + classId).success(function (data, status) {
                     if (data.results === true) {

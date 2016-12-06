@@ -90,19 +90,21 @@ def get_student_gauge(live_lect_id):
         return render_template('authentication/login.html', error='You are not logged in')
     return jsonify(results=API.get_gauge_pace_and_depth(live_lect_id, authUser.id))
 
-@app.route('/live_lecture/gauge/put/<int:live_lect_id>/<string:pace_num>/<string:depth_num>', methods = ['GET', 'POST'])
-def update_student_gauge(live_lect_id, pace_num, depth_num):
+@app.route('/live_lecture/gauge/update', methods = ['GET', 'POST'])
+def update_student_gauge():
     authUser = API.get_authentication()
     if not authUser:
         return render_template('authentication/login.html', error='You are not logged in')
     try:
         json_data = request.get_json()
-        lect_id = int(json_data['lect_id'])
+        live_lect_id = int(json_data['live_lect_id'])
         pace_num = float(json_data['pace_num'])
         depth_num = float(json_data['depth_num'])
     except ValueError:
         return json.dumps(False)
     prev = API.get_gauge_pace_and_depth(live_lect_id, authUser.id)
+    if prev is None:
+        prev = (0, 0)
     curr = (pace_num, depth_num)
     s1 = API.update_gauge_pace_and_depth(live_lect_id, authUser.id, pace_num, depth_num)
     s2 = API.change_total_pace_by(live_lect_id, curr[0] - prev[0])

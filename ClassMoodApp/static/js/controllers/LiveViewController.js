@@ -98,7 +98,7 @@ var ClassMoodApp;
             });
         };
         LiveViewController.prototype.postCurrentGauge = function () {
-            this.$http.post('/live_lecture/gauge/update', JSON.stringify({ lect_id: this.liveLectureId, pace_num: this.gauge.pace_num, depth_num: this.gauge.depth_num }))
+            this.$http.post('/live_lecture/gauge/update', JSON.stringify({ live_lect_id: this.liveLectureId, pace_num: this.gauge.pace_num, depth_num: this.gauge.depth_num }))
                 .success(function (data, status, headers, config) {
             })
                 .error(function (data, status, header, config) {
