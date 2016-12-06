@@ -9,6 +9,8 @@ from sqlalchemy import desc
 STUDENT = 'STUDENT'
 PROFESSOR = 'PROFESSOR'
 class API(object):
+
+    # Checks if the current user is a student
     @staticmethod
     def is_student(user_id):
         user = DBModels.User.query.filter_by(id=user_id).first()
@@ -16,6 +18,7 @@ class API(object):
             return user.is_student
         return False
 
+    # Checks if the current user is a professor
     @staticmethod
     def is_professor(user_id):
         user = DBModels.User.query.filter_by(id=user_id).first()
@@ -23,6 +26,7 @@ class API(object):
             return not user.is_student
         return False
 
+    # Gets the student class list
     @staticmethod
     def get_student_class_list(student_id):
         members = DBModels.ClassMember.query.filter_by(student_id=student_id).all()
@@ -32,11 +36,13 @@ class API(object):
                 result.append(DBModels.Class.query.filter_by(id=m.class_id).first().name)
         return result
 
+    # Gets the professor class list
     @staticmethod
     def get_professor_class_list(professor_id):
         classes = DBModels.Class.query.filter_by(professor_id=professor_id).all()
         return [profClass.name for profClass in classes]
 
+    # Gets the token for a given user id
     @staticmethod
     def get_user_token(user_id):
         session = DBModels.Session.query.filter_by(user_id=user_id).first()
@@ -44,6 +50,7 @@ class API(object):
             return session.token
         return None
 
+    # Creates a class for a professor
     @staticmethod
     def create_prof_class(class_name, professor_id):
         existing_class = DBModels.Class.query.filter_by(professor_id=professor_id, name=class_name).first()
@@ -54,6 +61,7 @@ class API(object):
             return True
         return False
 
+    # Adds a student to a class
     @staticmethod
     def set_student_class(class_name, student_id):
         requestedClass = DBModels.Class.query.filter_by(name=class_name).first()
@@ -67,6 +75,7 @@ class API(object):
                 return True
         return False
 
+    # Validates a login request given an email and password
     @staticmethod
     def validate_login(email, user_password):
         user = DBModels.User.query.filter_by(email=email).first()
@@ -78,6 +87,7 @@ class API(object):
                     return user
         return None
 
+    # Checks if the current user is authenticated
     @staticmethod
     def get_authentication(session_token=None):
         # if "token" in session:
@@ -90,6 +100,7 @@ class API(object):
             return user
         return None
 
+    # Checks if the current account is a Google account
     @staticmethod
     def is_google_account():
         user = API.get_authentication()
@@ -98,6 +109,7 @@ class API(object):
             return auth and auth.provider == DBModels.Providers.GOOGLE
         return False
 
+    # Gets the Google user given an email and name
     @staticmethod
     def get_google_user(email, name):
         existing_google_user = DBModels.User.query.filter_by(email=email).first()
@@ -112,8 +124,7 @@ class API(object):
         # API.create_session(existing_google_user.id)
         return existing_google_user
 
-
-
+    # Creates a session for a given user
     @staticmethod
     def create_session(userid):
         token = 0
@@ -125,17 +136,19 @@ class API(object):
             DBModels.db_rem(oldsesh)
         return token if DBModels.db_add(newsesh) else None
 
+    # Deletes a session given a session token
     @staticmethod
     def delete_session(session_token):
         sesh = DBModels.Session.query.filter_by(token=session_token).first()
         return DBModels.db_rem(sesh)
 
+    # Gets the class id for a given class name
     @staticmethod
     def get_class_id(class_name):
         class_obj = DBModels.Class.query.filter_by(name=class_name).first()
         return class_obj.id
 
-    # return the live lecture id of the live lecture that is live for class_id
+    # Return the live lecture id of the lecture that is live for class_id
     @staticmethod
     def get_live_lecture(class_id):
         live_class = DBModels.Class.query.filter_by(id=class_id).first()
@@ -145,7 +158,7 @@ class API(object):
                 return live_lecture.id
         return None
 
-    # returns the lecture associated with a live lecture
+    # Returns the lecture associated with a live lecture
     @staticmethod
     def get_lecture_from_live_lecture(live_lecture_id):
         live_lecture = DBModels.LiveLecture.query.filter_by(id=live_lecture_id).first()
@@ -163,7 +176,7 @@ class API(object):
             return lecture.name
         return "Live Lecture"
 
-    # disables the lecture that is live of class_id
+    # Disables the lecture that is live of class_id
     @staticmethod
     def disable_live_lecture(class_id):
         live_class = DBModels.Class.query.filter_by(id=class_id).first()
@@ -172,13 +185,13 @@ class API(object):
             return DBModels.db_update(live_class)
         return False
 
-    # create a lecture with a given name
+    # Creates a lecture with a given name
     @staticmethod
     def create_lecture(lecture_name, class_id):
         new_lecture = DBModels.Lecture(lecture_name, class_id)
         return DBModels.db_add(new_lecture)
 
-    # create a lecture that is live and returns the live lecture id
+    # Creates a lecture that is live and returns the live lecture id
     @staticmethod
     def create_live_lecture(lecture_id):
         lecture = DBModels.Lecture.query.filter_by(id=lecture_id).first()
@@ -192,7 +205,7 @@ class API(object):
                     return lecture_class.id
         return None
 
-    # get current live lecture polling question
+    # Gets the current live lecture's polling question
     @staticmethod
     def get_current_polling_question(live_lecture_id):
         live_lecture = DBModels.LiveLecture.query.filter_by(id=live_lecture_id).first()
@@ -215,6 +228,7 @@ class API(object):
                 return True
         return False
     
+    # Adds a student's reponse to a polling question
     @staticmethod
     def respond_to_polling_question(student_id, polling_qid, student_ans):
         if student_id and polling_qid and student_ans:
@@ -228,6 +242,7 @@ class API(object):
             return True
         return False
 
+    # Stops the current polling question for a live lecture
     @staticmethod
     def stop_polling_questions(live_lecture_id):
         live_lecture = DBModels.LiveLecture.query.filter_by(id=live_lecture_id).first()
@@ -248,10 +263,8 @@ class API(object):
             DBModels.db_update(live_lecture)
             return responses_dict
         return None
-                
 
-
-    # add a student to the live lecture
+    # Adds a student to the live lecture
     @staticmethod
     def add_student_to_live_lecture(live_lecture_id):
         live_lecture = DBModels.LiveLecture.query.filter_by(id=live_lecture_id).first()
@@ -260,7 +273,7 @@ class API(object):
             return DBModels.db_update(live_lecture)
         return False
 
-    # get pace for a live lecture
+    # Gets the pace for a live lecture
     @staticmethod
     def get_pace(live_lecture_id):
         live_lecture = DBModels.LiveLecture.query.filter_by(id=live_lecture_id).first()
@@ -268,7 +281,7 @@ class API(object):
             return live_lecture.pace_total / live_lecture.num_students
         return None
 
-    # get depth for a live lecture
+    # Gets the depth for a live lecture
     @staticmethod
     def get_depth(live_lecture_id):
         live_lecture = DBModels.LiveLecture.query.filter_by(id=live_lecture_id).first()
@@ -276,7 +289,7 @@ class API(object):
             return live_lecture.depth_total / live_lecture.num_students
         return None
 
-    # change the total pace by num for live lecture
+    # Change the total pace by num for a live lecture
     @staticmethod
     def change_total_pace_by(live_lecture_id, num):
         live_lecture = DBModels.LiveLecture.query.filter_by(id=live_lecture_id).first()
@@ -285,7 +298,7 @@ class API(object):
             return DBModels.db_update(live_lecture)
         return False
 
-    # change the total depth by num for live lecture
+    # Changes the total depth by num for a live lecture
     @staticmethod
     def change_total_depth_by(live_lecture_id, num):
         live_lecture = DBModels.LiveLecture.query.filter_by(id=live_lecture_id).first()
@@ -294,7 +307,7 @@ class API(object):
             return DBModels.db_update(live_lecture)
         return False
 
-    # return the current pace and depth for student in live lecture
+    # Returns the current pace and depth for a student in a live lecture
     @staticmethod
     def get_gauge_pace_and_depth(live_lecture_id, student_id):
         gauge = DBModels.Gauge.query.filter_by(live_lecture_id=live_lecture_id, student_id=student_id).first()
@@ -302,7 +315,7 @@ class API(object):
             return (gauge.pace, gauge.depth)
         return None
 
-    # add or update the current pace and depth for student in lecture
+    # Adds or updates the current pace and depth for a student in a lecture
     @staticmethod
     def update_gauge_pace_and_depth(live_lecture_id, student_id, pace_num, depth_num):
         gauge = DBModels.Gauge.query.filter_by(live_lecture_id=live_lecture_id, student_id=student_id).first()
@@ -316,7 +329,7 @@ class API(object):
             new_gauge.pace = pace_num
             return DBModels.db_add(new_gauge)
 
-    # return the question texts for a live lecture
+    # Returns the question texts for a live lecture
     @staticmethod
     def get_anonymous_questions(live_lecture_id):
         questions = DBModels.AnonymousQuestion.query.filter_by(live_lecture_id=live_lecture_id).all()
@@ -324,14 +337,14 @@ class API(object):
             return [q.text for q in questions]
         return []
 
-    # add a question for a lecture
+    # Adds a question to a lecture
     @staticmethod
     def add_anonymous_question(live_lecture_id, student_id, text):
         question = DBModels.AnonymousQuestion(live_lecture_id, text, student_id)
         return DBModels.db_update(question)
 
 
-    # list all the lectures in a class
+    # Lists all the lectures in a class
     @staticmethod
     def get_lecture_list(class_id):
         lectures = DBModels.Lecture.query.filter_by(class_id=class_id).order_by(desc(DBModels.Lecture.creation_time)).all()
@@ -342,13 +355,13 @@ class API(object):
                 ret.append({"lecture_id" : l.id, "lecture_name" : l.name, "num_questions" : len(questions), "creation_time" : l.creation_time})
         return ret
 
-    # create a polling question
+    # Create a new polling question
     @staticmethod
     def create_polling_question(lecture_id, q_text, a_text, b_text, c_text, d_text, ans):
         question = DBModels.PollingQuestion(lecture_id, q_text, a_text, b_text, c_text, d_text, ans)
         return DBModels.db_add(question)
 
-    # list all polling questions for a lecture
+    # Lists all polling questions for a lecture
     @staticmethod
     def get_polling_questions(lecture_id):
         questions = DBModels.PollingQuestion.query.filter_by(lecture_id=lecture_id).all()
@@ -360,8 +373,7 @@ class API(object):
 
     
 
-    # delete a single polling question
-    # this deletes the polling question and reponses
+    # Delete a single polling question and the reponses assoicated with the polling question
     @staticmethod
     def delete_polling_question(polling_question_id):
         question = DBModels.PollingQuestion.query.filter_by(id=polling_question_id).first()
@@ -373,9 +385,7 @@ class API(object):
                 DBModels.db_rem(r)
         return True
 
-    # delete a single lecture
-    # this deletes the lecture (polling questions, polling question responses)
-    # and live lecture (gauges, anonymous questions)
+    # Delete a single lecture, polling questions, polling question responses, live lecture, gauges, and anonymous questions assoicated with the lecture
     @staticmethod
     def delete_lecture(lecture_id):
         live_lecture = DBModels.LiveLecture.query.filter_by(lecture_id=lecture_id).first()
@@ -398,9 +408,7 @@ class API(object):
             DBModels.db_rem(lecture)
         return True
 
-    # delete a single class
-    # this deletes the class (class members)
-    # and all lectures
+    # Delete a single class, class members, and lectures assoicated with the class
     @staticmethod
     def delete_class(class_id):
         lectures = DBModels.Lecture.query.filter_by(class_id=class_id).all()

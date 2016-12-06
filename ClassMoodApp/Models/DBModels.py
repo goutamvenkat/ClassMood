@@ -8,10 +8,13 @@ from datetime import datetime, timedelta
 
 db = SQLAlchemy()
 
+# These classes provide models to interact with the database.
+
 class Providers(object):
     USERPASS = 'USERPASS'
     GOOGLE = 'GOOGLE'
 
+# User Table - columns include id, first name, last name, email, is student
 class User(db.Model):
     __tablename__ = 'Users'
     id = Column(Integer, primary_key=True)
@@ -25,6 +28,7 @@ class User(db.Model):
         self.email = email
         self.is_student = is_student
 
+# Authentication Table - columns include user is, password, provider, user relation
 class Authentication(db.Model):
     __tablename__ = 'Authentication'
     user_id = Column(Integer, ForeignKey('Users.id'), primary_key=True, autoincrement=False)
@@ -38,6 +42,7 @@ class Authentication(db.Model):
         self.provider = provider
         self.password = '{}:{}'.format(hashlib.sha256(salt.encode() + password.encode()).hexdigest(), salt)
 
+# Session Table - columns include id, user is, token, create at, expires at, user relation
 class Session(db.Model):
     __tablename__ = 'Sessions'
     id = Column(Integer, primary_key=True)
@@ -54,6 +59,7 @@ class Session(db.Model):
     def __repr__(self):
         return "token:{}, id:{}, userid:{}, create:{}, expire:{}".format(str(self.token), str(self.id), str(self.user_id), str(self.created_at), str(self.expires_at))
 
+# Class Table - columns include id, name, description, professor id, user relation, live lecture id, live lecture relation
 class Class(db.Model):
     __tablename__ = 'Classes'
     id = Column(Integer, primary_key=True)
@@ -68,6 +74,7 @@ class Class(db.Model):
         self.description = description
         self.professor_id = professor_id
 
+# Class Member Table - columns include student id, class id, user relation, lecture relation
 class ClassMember(db.Model):
     __tablename__ = 'ClassMembers'
     student_id = Column(Integer, ForeignKey('Users.id'), primary_key=True)
@@ -78,6 +85,7 @@ class ClassMember(db.Model):
         self.student_id = student_id
         self.class_id = class_id
 
+# Lecture Table - columns include id, name, class id, creation time
 class Lecture(db.Model):
     __tablename__ = 'Lectures'
     id = Column(Integer, primary_key=True)
@@ -89,6 +97,7 @@ class Lecture(db.Model):
         self.class_id = class_id
         self.creation_time = datetime.now()
 
+# Live Lecture Table - columns include id, lecture id, pace total, depth total, num students, current polling qid
 class LiveLecture(db.Model):
     __tablename__ = 'LiveLectures'
     id = Column(Integer, primary_key=True)
@@ -104,6 +113,7 @@ class LiveLecture(db.Model):
         self.num_students = 0
         self.current_polling_qid = current_polling_qid
 
+# Gauge Table - columns include id, live lecture id, student id, depth, pace
 class Gauge(db.Model):
     __tablename__ = 'Gauges'
     id = Column(Integer, primary_key=True)
@@ -117,6 +127,7 @@ class Gauge(db.Model):
         self.depth = 0
         self.pace = 0
 
+# Anonymous Question Table - columns include id, live lecture id, text, student id
 class AnonymousQuestion(db.Model):
     __tablename__ = 'AnonymousQuestions'
     id = Column(Integer, primary_key=True)
@@ -128,6 +139,7 @@ class AnonymousQuestion(db.Model):
         self.text = text
         self.student_id = student_id
 
+# Polling Question Table - columns include id, lecture id, text, a text, b text, c text, d text, answer
 class PollingQuestion(db.Model):
     __tablename__ = 'PollingQuestions'
     id = Column(Integer, primary_key=True)
@@ -147,6 +159,7 @@ class PollingQuestion(db.Model):
         self.d_text = d_text
         self.answer = answer
 
+# Polling Question Reponse Table - columns include id, student id, polling question id, student answer
 class PollingQuestionResponse(db.Model):
     __tablename__ = 'PollingQuestionResponses'
     id = Column(Integer, primary_key=True)
@@ -158,6 +171,7 @@ class PollingQuestionResponse(db.Model):
         self.polling_question_id = polling_question_id
         self.student_answer = student_answer
 
+# Add objects to the database
 def db_add(*obj):
     if obj:
         for entry in obj:
@@ -166,6 +180,7 @@ def db_add(*obj):
         return True
     return False
 
+# Remove objects from the database
 def db_rem(*obj):
     if obj:
         for entry in obj:
@@ -174,6 +189,7 @@ def db_rem(*obj):
         return True
     return False
 
+# Update objects in the database
 def db_update(*obj):
     if obj:
         for entry in obj:
