@@ -9,6 +9,7 @@
             <button type="button" class="btn btn-danger" ng-click="myCtrl.endLiveLecture()" ng-hide="myCtrl.isStudent">End Live Lecture</button>
         </div>
     </div>
+    <!-- UI for Gauages -->
     <div class="panel panel-default container lecture-container no-border">
         <div ng-init="myCtrl.init({{class_id}}, {{lecture_id}}, {{live_lecture_id}})"></div>
         <div class="live-lecture-top row">
@@ -63,6 +64,7 @@
                     <button class="btn btn-default" ng-click="myCtrl.resetGauges()" ng-hide="myCtrl.isStudent" ng-model="myCtrl.reset">Reset Gauges</button>
                 </div>
             </div>
+            <!-- UI for polling questions -->
             <div class="col-md-8">
                 <div ng-hide="myCtrl.isStudent || myCtrl.pollingQuestions == null || myCtrl.pollingQuestions.length == 0">
                     <h5 class="polling-questions-title" style="border-bottom: thin solid #7F7F7F;padding-bottom:5px;width:153px">Polling Question</h5>
@@ -120,6 +122,7 @@
                 </div>
             </div>
         </div>
+        <!-- UI for anonymous questions -->
         <div class="row" >
             <center>
                 <textarea id="questionsArea" rows="6" style="width:100%;" readonly>
