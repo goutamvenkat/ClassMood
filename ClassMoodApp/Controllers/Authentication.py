@@ -5,12 +5,14 @@ from ClassMoodApp.Models.API import API
 login_page = 'authentication/login.html'
 main_page = 'classList.html'
 
+# Returns a template for the login page
 @app.route("/")
 def login():
     if API.get_authentication():
         return render_template(main_page, username=API.get_authentication().first_name, user_id=API.get_authentication().id)
     return render_template(login_page)
 
+# Authenticates the user. Returns the homepage if authenticated successfully, otherwise an error
 @app.route('/loginUser', methods=['POST'])
 @app.route('/loginUser/<email>/<name>', methods=['GET', 'POST'])
 def loginUser(email=None, name=None):
@@ -32,6 +34,7 @@ def loginUser(email=None, name=None):
         return resp
     return render_template(login_page, error='Invalid email or password')
 
+# Logs the user out of the application
 @app.route('/logoutUser', methods=['GET', 'POST'])
 def logout():
     session_token = request.cookies.get('token')
@@ -40,6 +43,7 @@ def logout():
     resp.set_cookie('token', '')
     return resp
 
+# Returns the user id of the current user
 @app.route('/user_id', methods=['GET'])
 def user_id():
     auth = API.get_authentication()
@@ -47,6 +51,7 @@ def user_id():
         return jsonify(results=auth.id)
     return jsonify(results=[])
 
+# Returns if the current user is logged in via Google
 @app.route('/is_google_user', methods=['GET'])
 def is_google_user():
     return jsonify(results=API.is_google_account())
