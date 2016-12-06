@@ -1,3 +1,4 @@
+//Data model for student polling questions
 module ClassMoodApp {
     export class PollingQuestionStudentModel {
     	question_id: number;

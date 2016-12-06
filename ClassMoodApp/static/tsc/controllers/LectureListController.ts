@@ -3,6 +3,7 @@
 declare var angular: ng.IAngularStatic;
 module ClassMoodApp {
     "use strict";
+    //Controller for lecture lists
     export class LectureListController {
         static $inject = ["$scope", "$http", "$window", "$routeParams"];
         public lectures:Array<LectureListModel>;
@@ -17,7 +18,7 @@ module ClassMoodApp {
                         this.$window = $window;
                         this.lectures = [];
                     }
-
+        //Get initial required data
         public init(classId: number): void {
             this.classId = classId;
             this.getCurrentlectures();
@@ -25,6 +26,7 @@ module ClassMoodApp {
             this.getUserId();
         }
 
+        //Get lectures for this class
         private getCurrentlectures(): void {
             this.$http.get(`/get_lecture_list/${this.classId}`).success(
                 (data: any, status) => {
@@ -35,6 +37,7 @@ module ClassMoodApp {
             });
         }
 
+        //Get current user ID
         private getUserId(): void {
             this.$http.get('/user_id').then(
                 (response: any) => {
@@ -43,6 +46,7 @@ module ClassMoodApp {
             )
         }
 
+        //Get whether or not current user is a professor
         private getIsProfessor(): void {
             this.$http.get("/is_student").success(
                 (is_student: any, status) => {
@@ -51,6 +55,7 @@ module ClassMoodApp {
             )
         }
 
+        //Add a lecture (professor only)
         public addLecture(): void {
             bootbox.prompt({
                 title: "Enter Lecture Name",
@@ -71,6 +76,7 @@ module ClassMoodApp {
             });
         }
 
+        //Add a created lecture for a student
         private setStudentLecture(lectureName: string): void {
             this.$http.get(`/set_student_lectures/${lectureName}/${this.userId}`).then(
                 (response: any) => {
@@ -83,6 +89,7 @@ module ClassMoodApp {
             )
         }
 
+        //Add a lecture for a professor
         private setProfLecture(lectureName: string): void {
             this.$http.get(`/createClass/${lectureName}`).then(
                 (response: any) => {
@@ -95,7 +102,7 @@ module ClassMoodApp {
             )
         }
 
-
+        //Create a live session for the current lecture
         public goLive(lectId: number): void {
             this.$http.get(`/live_lecture/create/${lectId}`).then(
                 (response: any) => {
@@ -107,12 +114,14 @@ module ClassMoodApp {
             )
         }
 
+        //Get the polling questions for current lecture (professor only)
         public getPollingQuestions(lecture_id: number): void {
             if (this.isStudent !== true) {
                 this.$window.location.href = `/pollingQuestionList/${this.classId}/${lecture_id}`;
             }
         }
 
+        //Delete the given lecture
         public deleteLecture(lecture_id: number): void {
             if (!this.isStudent) {
                 this.$http.get(`/delete/lecture/${lecture_id}`).success(

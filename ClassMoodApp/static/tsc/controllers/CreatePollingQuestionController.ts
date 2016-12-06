@@ -2,6 +2,7 @@
 declare var angular: ng.IAngularStatic;
 module ClassMoodApp {
     "use strict";
+    //Controller for polling question creation
     export class CreatePollingQuestionController {
         static $inject = ["$scope", "$http", "$window"];
         public questions:Array<CreatePollingQuestionModel>;
@@ -25,7 +26,7 @@ module ClassMoodApp {
                         this.classId = parseInt(curLink[curLink.length-3]);
                         this.lecture_id = parseInt(curLink[curLink.length-2]);                        
                     }
-
+        //Submit a polling question (professor only)
         public submitPollingQuestion(): void {
 			let text = encodeURIComponent(this.question_text);
 			let a = encodeURIComponent(this.a_text);

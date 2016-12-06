@@ -2,6 +2,7 @@
 declare var angular: ng.IAngularStatic;
 module ClassMoodApp {
     "use strict";
+    //Controller for class lists
     export class ClassListController {
         static $inject = ["$scope", "$http", "$window"];
         public classes:Array<ClassListModel>;
@@ -19,6 +20,7 @@ module ClassMoodApp {
                         this.getUserId();
                     }
 
+        //Gets classes for current user
         private getCurrentClasses(): void {
             this.$http.get("/getClassList").success(
                 (data: any, status) => {
@@ -29,6 +31,7 @@ module ClassMoodApp {
             });
         }
 
+        //Gets current user ID
         private getUserId(): void {
             this.$http.get('/user_id').then(
                 (response: any) => {
@@ -37,6 +40,7 @@ module ClassMoodApp {
             )
         }
 
+        //returns whether or not user is a professor
         private getIsProfessor(): void {
             this.$http.get("/is_student").success(
                 (is_student: any, status) => {
@@ -45,6 +49,7 @@ module ClassMoodApp {
             )
         }
 
+        //Add class for current user
         public addClass(): void {
             bootbox.prompt({
                 title: "Enter Class Name",
@@ -61,6 +66,7 @@ module ClassMoodApp {
             });
         }
 
+        //Add class for current user if student
         private setStudentClass(className: string): void {
             this.$http.get(`/set_student_classes/${className}/${this.userId}`).then(
                 (response: any) => {
@@ -73,6 +79,7 @@ module ClassMoodApp {
             )
         }
 
+        //Add class for current user if professor
         private setProfClass(className: string): void {
             this.$http.get(`/createClass/${className}`).then(
                 (response: any) => {
@@ -104,6 +111,7 @@ module ClassMoodApp {
             }
         }
 
+        //Delete a class
         public deleteClass(classId: number) {
             if (this.isStudent) {
                 this.$http.get(`/delete/class_student/${this.userId}/${classId}`).success(
@@ -128,6 +136,7 @@ module ClassMoodApp {
             }
         }
 
+        //Get lecture list for given class
         public getClassLectures(classId: number): void {
             if (this.isStudent !== true) {
                 this.$window.location.href = `/lectureList/${classId}`;

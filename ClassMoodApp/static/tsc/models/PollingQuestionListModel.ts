@@ -1,3 +1,4 @@
+//Data model for polling question list
 module ClassMoodApp {
     export class PollingQuestionListModel {
         id: string;

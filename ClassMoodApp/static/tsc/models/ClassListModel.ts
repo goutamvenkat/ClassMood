@@ -1,3 +1,4 @@
+//Data model for Class List
 module ClassMoodApp {
     export class ClassListModel {
         className: string;

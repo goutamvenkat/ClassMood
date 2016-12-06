@@ -1,3 +1,10 @@
+///////////////////////////////////////////////////
+//
+// This file would handle routing if Angular were
+// also used for the backend. This is handled by
+// Flask.
+//
+///////////////////////////////////////////////////
 declare var angular: ng.IAngularStatic;
 module ClassMoodApp {
     "use strict";

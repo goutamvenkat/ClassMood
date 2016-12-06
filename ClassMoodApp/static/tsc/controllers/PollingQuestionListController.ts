@@ -2,6 +2,7 @@
 declare var angular: ng.IAngularStatic;
 module ClassMoodApp {
     "use strict";
+    //Controller for polling question lists
     export class PollingQuestionListController {
         static $inject = ["$scope", "$http", "$window"];
         public questions:Array<PollingQuestionListModel>;
@@ -21,6 +22,7 @@ module ClassMoodApp {
                         this.getPollingQuestions();
                     }
 
+        //Get polling questions for current session
         private getPollingQuestions(): void {
             this.$http.get(`/get_polling_questions/${this.lecture_id}`).success(
                 (data: any, status) => {
@@ -31,6 +33,7 @@ module ClassMoodApp {
             });
         }
 
+        //Start or join live session for a lecture
         public goLive(): void {
             this.$http.get(`/live_lecture/create/${this.lecture_id}`).then(
                 (response: any) => {
@@ -40,12 +43,14 @@ module ClassMoodApp {
             )
         }
 
+        //Bring up the UI to create a polling question
         public loadAddPollingQuestionsPage(): void {
             if (!this.isStudent) {
                 this.$window.location.href = `/pollingQuestionList/${this.classId}/${this.lecture_id}/createPollingQuestion`;
             }
         }
 
+        //Delete selected polling question
         public deletePollingQuestion(id: number): void {
             if (!this.isStudent) {
                 this.$http.get(`/delete/polling_question/${id}`).success(

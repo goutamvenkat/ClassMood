@@ -2,6 +2,7 @@
 declare var angular: ng.IAngularStatic;
 module ClassMoodApp {
     "use strict";
+    //Controller for Live Lecture View
     export class LiveViewController {
         static $inject = ["$scope", "$http", "$timeout", "$window"];
         public isStudent: boolean;
@@ -41,6 +42,7 @@ module ClassMoodApp {
                         this.pollingQuestionStudentExist = false;
                     }
 
+        //Get current required data
         public init(class_id: number, lecture_id: number, live_lecture_id: number): void {
             this.classId = class_id;
             this.lectureId = lecture_id;
@@ -49,6 +51,7 @@ module ClassMoodApp {
             this.getUserId();
         }
 
+        //Get current user id
         private getUserId(): void {
             this.$http.get('/user_id').then(
                 (response: any) => {
@@ -57,6 +60,7 @@ module ClassMoodApp {
             )
         }
 
+        //Get whether or not current user is student
         private getIsStudent(): void {
             this.$http.get("/is_student").success(
                 (is_student: any, status) => {
@@ -78,16 +82,19 @@ module ClassMoodApp {
             )
         }
 
+        //Submit new pace (student only)
         private votePace(newPace: number): void {
             this.gauge.pace_num = newPace;
             this.postCurrentGauge();
         }
 
+        //Submit new depth (student only)
         private voteDepth(newDepth: number): void {
             this.gauge.depth_num = newDepth;
             this.postCurrentGauge();
         }
 
+        //Get current gauge status (professor only)
         private getGauge(self): void {
             self.$http.get(`/live_lecture/gauge/get/${self.liveLectureId}`)
             .success(function(response: any) {
@@ -129,6 +136,7 @@ module ClassMoodApp {
             })
         }
 
+        //push current gauge state
         private postCurrentGauge(): void {
             this.$http.post('/live_lecture/gauge/update', JSON.stringify({live_lect_id: this.liveLectureId, pace_num: this.gauge.pace_num, depth_num: this.gauge.depth_num}))
             .success(function(data, status, headers, config) {
@@ -138,6 +146,7 @@ module ClassMoodApp {
             })
         }
 
+        //Get current lecture pace (repeatedly)
         private gaugePollPace(self): void {
             this.$http.get(`/live_lecture/pace/get/${this.liveLectureId}`)
             .success(function(response: number) {
@@ -150,6 +159,7 @@ module ClassMoodApp {
             })
         }
 
+        //Get current lecture depth (repeatedly)
         private gaugePollDepth(self): void {
             this.$http.get(`/live_lecture/depth/get/${this.liveLectureId}`)
             .success(function(response: number) {
@@ -162,6 +172,7 @@ module ClassMoodApp {
             })
         }
 
+        //Get current anonymous questions (repeatedly)
         private pollAnonymousQuestions(self): void {
 			this.$http.get(`/live_lecture/questions/get/${this.liveLectureId}`)
 			.success(function(response: any) {
@@ -175,6 +186,7 @@ module ClassMoodApp {
 			})
 		}
 
+        //Ensure live session is current (repeatedly)
         private pollCurrentLiveLecture(self): void {
 			this.$http.get(`/live_lecture/get_id/${this.classId}`)
 			.success(function(response: any) {
@@ -191,10 +203,12 @@ module ClassMoodApp {
 			})
 		}
 
+        //Submit anonymous question
 		private submitPressed(): void {
 			this.submitAnonymousQuestion(this);
 		}
 
+        //Handler for anonymous question submission
 		private submitAnonymousQuestion(self): void {
 			if (this.questionEntered !== '') {
 				this.$http.get(`/live_lecture/questions/put/${this.liveLectureId}/${this.questionEntered}`)
@@ -206,6 +220,7 @@ module ClassMoodApp {
 			}
 		}
 
+        //Reset gauges to default values
         public resetGauges(): void {
             if (!this.isStudent) {
                 this.$http.get(`/reset_gauges/${this.liveLectureId}`).success(
@@ -221,6 +236,7 @@ module ClassMoodApp {
             }
         }
 
+        //Get current polling questions
         private getPollingQuestions(): void {
             var self = this;
             this.$http.get(`/get_polling_questions/${this.lectureId}`)
@@ -244,6 +260,7 @@ module ClassMoodApp {
             })
         }
 
+        //Get previous polling question
         public previousPollingQuestion(): void {
             if (!this.currentlyPresenting) {
                 this.currentPollingQuestion -= 1;
@@ -255,6 +272,7 @@ module ClassMoodApp {
             }
         }
 
+        //Get next polling question
         public nextPollingQuestion(): void {
             if (!this.currentlyPresenting) {
                 this.currentPollingQuestion += 1;
@@ -266,6 +284,7 @@ module ClassMoodApp {
             }
         }
 
+        //Present currently selected question to the class
         public beginPresentingQuestion(): void {
             if (!this.currentlyPresenting) {
                 var self = this;
@@ -276,6 +295,7 @@ module ClassMoodApp {
             }
         }
 
+        //Stop presenting question and tally results
         public stopPresentingQuestion(): void {
             if (this.currentlyPresenting) {
                 var self = this;
@@ -309,6 +329,7 @@ module ClassMoodApp {
             }
         }
 
+        //Reload current question
         private rebuildCurrentQuestion(): void {
             var questionTextString = this.pollingQuestions[this.currentPollingQuestion].text;
             var aTextString = this.pollingQuestions[this.currentPollingQuestion].a_text;
@@ -361,6 +382,7 @@ module ClassMoodApp {
             $('#question-pagination').text("Polling Question: " + (this.currentPollingQuestion + 1) + "/" + this.pollingQuestions.length);
         }
 
+        //Repeatedly check for new polling questions (for student response)
         public pollQuestionsStudent(self): void {
             this.$http.get(`/live_lecture/curr_polling_question/get/${this.liveLectureId}`)
             .success(function(response: any) {
@@ -387,10 +409,12 @@ module ClassMoodApp {
             })
         }
 
+        //Submit student response
         public setStudentResponse(resp: string): void {
             this.studentResponse = resp;
         }
 
+        //Handler for student response
         public studentQuestionReponse(): void {
             this.$http.get(`/live_lecture/respond_to_question/${this.userId}/${this.pollingQuestionStudent.question_id}/${this.studentResponse}`)
             .success(function(response: any) {
@@ -399,6 +423,7 @@ module ClassMoodApp {
             })
         }
 
+        //End live lecture
         public endLiveLecture(): void {
             console.log("Ending live lecture...");
             var self = this;

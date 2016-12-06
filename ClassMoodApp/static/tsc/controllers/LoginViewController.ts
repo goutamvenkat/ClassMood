@@ -2,6 +2,7 @@
 declare var angular: ng.IAngularStatic;
 module ClassMoodApp {
     "use strict";
+    //Login controller
     export class LoginViewController {
         static $inject = ["$scope", "$http", "$window"];
         constructor(private $scope: ng.IScope,

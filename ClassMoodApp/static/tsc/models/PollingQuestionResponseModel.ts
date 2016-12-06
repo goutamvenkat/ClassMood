@@ -1,3 +1,4 @@
+//Data model for polling question responses
 module ClassMoodApp {
     export class PollingQuestionResponseModel {
         A: number;

@@ -1,3 +1,4 @@
+//Data model for lecture lists
 module ClassMoodApp {
     export class LectureListModel {
         lecture_name: string;
